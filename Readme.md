@@ -2,3 +2,4 @@
 Team members:
 - Puja Sarkar
 - Arpan Mondal
+- Sougata Patra
