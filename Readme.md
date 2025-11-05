@@ -1,5 +1,6 @@
 ## Employee Leave Managament System
-Team members:
+ ---
+### Team members:
 - Puja Sarkar
 - Arpan Mondal
 - Sougata Patra
