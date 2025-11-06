@@ -1,7 +1,10 @@
+// Pages import
+import Home from "@/pages/Home"
+
 function App() {
   return (
     <>
-      <div className="text-3xl text-blue-400">ELMS software</div>
+      <Home />
     </>
   )
 }
