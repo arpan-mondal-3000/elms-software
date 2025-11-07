@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "../ui/button"
 import { ArrowRight, CheckCircle } from "lucide-react"
+import banner from "@/assets/home_page_banner.jpg"
 
 export function HeroSection() {
   return (
@@ -31,7 +32,7 @@ export function HeroSection() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <Button size="lg" className="bg-primary hover:bg-primary/90 text-base">
-              Start Free Trial
+              Register your Organization
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
             <Button size="lg" variant="outline" className="text-base bg-transparent">
@@ -58,8 +59,8 @@ export function HeroSection() {
 
         {/* Hero Image */}
         <div className="mt-16 md:mt-20">
-          <div className="relative rounded-xl overflow-hidden border border-border bg-gradient-to-b from-secondary to-background p-2 shadow-xl">
-            <img src="/employee-leave-management-dashboard-interface-mode.jpg" alt="LeaveHub Dashboard" className="w-full rounded-lg" />
+          <div className="relative rounded-xl overflow-hidden border border-border bg-linear-to-b from-secondary to-background p-2 shadow-xl">
+            <img src={banner} alt="ProLeave Dashboard" className="w-full rounded-lg" />
           </div>
         </div>
       </div>

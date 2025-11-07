@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Calendar, CheckSquare, Clock, BarChart3, Bell, Lock } from "lucide-react"
 
 export function FeaturesSection() {

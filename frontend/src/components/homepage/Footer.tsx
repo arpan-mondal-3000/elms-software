@@ -88,11 +88,11 @@ export function Footer() {
         <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between">
           <div className="flex items-center gap-2 mb-4 md:mb-0">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground font-bold">
-              LM
+              PL
             </div>
-            <span className="font-semibold">LeaveHub</span>
+            <span className="font-semibold">ProLeave</span>
           </div>
-          <p className="text-sm text-muted-foreground">&copy; 2025 LeaveHub. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">&copy; 2025 ProLeve. All rights reserved.</p>
         </div>
       </div>
     </footer>

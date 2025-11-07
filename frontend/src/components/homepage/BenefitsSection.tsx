@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card"
+import { Card } from "../ui/card"
 import { TrendingUp, Users, Zap } from "lucide-react"
 
 export function BenefitsSection() {
@@ -13,7 +13,7 @@ export function BenefitsSection() {
       icon: Users,
       stat: "100%",
       title: "Team Visibility",
-      description: "Know who is available and when with at-a-glance team calendars",
+      description: "Know who is available and when with at-a-glance",
     },
     {
       icon: TrendingUp,
@@ -29,7 +29,7 @@ export function BenefitsSection() {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">Measurable Results</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-balance">
-            See the impact LeaveHub can have on your organization
+            See the impact ProLeave can have on your organization
           </p>
         </div>
 
@@ -39,10 +39,10 @@ export function BenefitsSection() {
             return (
               <Card
                 key={index}
-                className="border-border bg-gradient-to-br from-card to-muted/20 p-8 hover:shadow-lg transition-shadow"
+                className="border-border bg-linear-to-br from-card to-muted/20 p-8 hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
+                  <div className="w-16 h-16 rounded-lg bg-secondary flex items-center justify-center shrink-0">
                     <Icon className="w-8 h-8 text-primary" />
                   </div>
                   <div className="flex-1">
