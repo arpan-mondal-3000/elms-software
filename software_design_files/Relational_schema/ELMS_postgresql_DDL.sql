@@ -18,7 +18,8 @@ ALTER TABLE
     "users" ADD PRIMARY KEY("user_id");
 CREATE TABLE "department"(
     "id" INTEGER NOT NULL,
-    "name" VARCHAR(255) NOT NULL
+    "name" VARCHAR(255) NOT NULL,
+    "organization id" INTEGER NOT NULL
 );
 ALTER TABLE
     "department" ADD PRIMARY KEY("id");
@@ -68,6 +69,23 @@ CREATE TABLE "leave_request"(
 );
 ALTER TABLE
     "leave_request" ADD PRIMARY KEY("id");
+CREATE TABLE "organization"(
+    "id" INTEGER NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "location" TEXT NOT NULL
+);
+ALTER TABLE
+    "organization" ADD PRIMARY KEY("id");
+CREATE TABLE "User Record"(
+    "id" BIGINT NOT NULL,
+    "user_id" VARCHAR(255) NOT NULL,
+    "organization_id" BIGINT NOT NULL,
+    "department_id" BIGINT NOT NULL
+);
+ALTER TABLE
+    "User Record" ADD PRIMARY KEY("id");
+ALTER TABLE
+    "User Record" ADD CONSTRAINT "user record_user_id_foreign" FOREIGN KEY("user_id") REFERENCES "users"("id");
 ALTER TABLE
     "leave_request" ADD CONSTRAINT "leave_request_approver_id_foreign" FOREIGN KEY("approver_id") REFERENCES "admin"("admin_id");
 ALTER TABLE
@@ -76,6 +94,8 @@ ALTER TABLE
     "employee" ADD CONSTRAINT "employee_emp_id_foreign" FOREIGN KEY("emp_id") REFERENCES "leave_balance"("id");
 ALTER TABLE
     "employee" ADD CONSTRAINT "employee_emp_id_foreign" FOREIGN KEY("emp_id") REFERENCES "users"("user_id");
+ALTER TABLE
+    "department" ADD CONSTRAINT "department_organization id_foreign" FOREIGN KEY("organization id") REFERENCES "User Record"("department_id");
 ALTER TABLE
     "users" ADD CONSTRAINT "users_department_foreign" FOREIGN KEY("department") REFERENCES "department"("id");
 ALTER TABLE
@@ -87,4 +107,8 @@ ALTER TABLE
 ALTER TABLE
     "leave_balance" ADD CONSTRAINT "leave_balance_leave_type_foreign" FOREIGN KEY("leave_type") REFERENCES "leave_type"("id");
 ALTER TABLE
+    "User Record" ADD CONSTRAINT "user record_organization_id_foreign" FOREIGN KEY("organization_id") REFERENCES "organization"("id");
+ALTER TABLE
     "employee" ADD CONSTRAINT "employee_admin_id_foreign" FOREIGN KEY("admin_id") REFERENCES "admin"("admin_id");
+ALTER TABLE
+    "department" ADD CONSTRAINT "department_name_foreign" FOREIGN KEY("name") REFERENCES "organization"("location");
