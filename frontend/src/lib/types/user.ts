@@ -1,5 +1,3 @@
-import { type Department, type Organization } from "./organization";
-
 export type Employee = {
     email: string;
     emp_id: string;
@@ -7,8 +5,8 @@ export type Employee = {
     last_name: string;
     password: string;
     contact_no: string;
-    organization?: Organization;
-    department?: Department;
+    organization_id: number | null | undefined;
+    department_id: number | null | undefined;
     address: string;
     joining_date: Date;
 }
