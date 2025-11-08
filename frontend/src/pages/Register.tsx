@@ -154,7 +154,7 @@ export default function Register() {
                                                                         key={org.id}
                                                                         value={org.name}
                                                                         onSelect={(currentValue) => {
-                                                                            setUserData((prev) => ({ ...prev, organization_id: (organizations ? organizations.find((o) => o.name === currentValue)?.id : null) }));
+                                                                            setUserData((prev) => ({ ...prev, department_id: null, organization_id: (organizations ? organizations.find((o) => o.name === currentValue)?.id : null) }));
                                                                             setOpenOrgBox(false);
                                                                         }}
                                                                     >

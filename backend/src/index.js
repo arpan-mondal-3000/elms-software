@@ -31,5 +31,5 @@ app.get("/api", (req, res) => {
 // Listen for incoming connections
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-    console.log("Server is listening on Port", PORT);
+    console.log(`Server is running on http://localhost:${PORT}`);
 })
