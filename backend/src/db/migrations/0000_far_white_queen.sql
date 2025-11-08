@@ -1,0 +1,105 @@
+CREATE TYPE "public"."role" AS ENUM('admin', 'employee');--> statement-breakpoint
+CREATE TYPE "public"."statuses" AS ENUM('pending', 'approved', 'rejected', 'canceled');--> statement-breakpoint
+CREATE TABLE "adimn" (
+	"admin_id" integer PRIMARY KEY NOT NULL,
+	"manages" integer NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "departments" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "departments_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"name" text NOT NULL,
+	"organization_id" integer NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "employees" (
+	"employee_id" integer PRIMARY KEY NOT NULL,
+	"is_approved" boolean DEFAULT false NOT NULL,
+	"admin_id" integer NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "leave_balances" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "leave_balances_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"employee_id" integer NOT NULL,
+	"leave_type" integer NOT NULL,
+	"used_days" integer DEFAULT 0 NOT NULL,
+	"remaining_days" integer NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "leave_requests" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "leave_requests_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"employee_id" integer NOT NULL,
+	"approver_id" integer NOT NULL,
+	"leave_type" integer NOT NULL,
+	"status" "statuses" DEFAULT 'pending' NOT NULL,
+	"start_date" date NOT NULL,
+	"end_date" date NOT NULL,
+	"total_days" integer NOT NULL,
+	"reason" text NOT NULL,
+	"approval_comment" text,
+	"approval_date" date,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "leave_types" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "leave_types_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"name" varchar NOT NULL,
+	"description" text NOT NULL,
+	"max_days_per_year" integer DEFAULT 0 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "organizations" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "organizations_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"name" text NOT NULL,
+	"location" text NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "user_records" (
+	"id" integer PRIMARY KEY NOT NULL,
+	"organization_id" integer,
+	"department_id" integer,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "users" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "users_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"org_emp_id" text NOT NULL,
+	"first_name" varchar NOT NULL,
+	"last_name" varchar NOT NULL,
+	"email" varchar(200) NOT NULL,
+	"password" text NOT NULL,
+	"contact_no" text NOT NULL,
+	"role" "role" DEFAULT 'employee' NOT NULL,
+	"address" text NOT NULL,
+	"joining_date" date NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_email_unique" UNIQUE("email")
+);
+--> statement-breakpoint
+ALTER TABLE "adimn" ADD CONSTRAINT "adimn_admin_id_users_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "adimn" ADD CONSTRAINT "adimn_manages_departments_id_fk" FOREIGN KEY ("manages") REFERENCES "public"."departments"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "departments" ADD CONSTRAINT "departments_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "employees" ADD CONSTRAINT "employees_employee_id_users_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "employees" ADD CONSTRAINT "employees_admin_id_adimn_admin_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."adimn"("admin_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "leave_balances" ADD CONSTRAINT "leave_balances_employee_id_employees_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("employee_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "leave_balances" ADD CONSTRAINT "leave_balances_leave_type_leave_types_id_fk" FOREIGN KEY ("leave_type") REFERENCES "public"."leave_types"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "leave_requests" ADD CONSTRAINT "leave_requests_employee_id_employees_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("employee_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "leave_requests" ADD CONSTRAINT "leave_requests_approver_id_adimn_admin_id_fk" FOREIGN KEY ("approver_id") REFERENCES "public"."adimn"("admin_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "leave_requests" ADD CONSTRAINT "leave_requests_leave_type_leave_types_id_fk" FOREIGN KEY ("leave_type") REFERENCES "public"."leave_types"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_records" ADD CONSTRAINT "user_records_id_users_id_fk" FOREIGN KEY ("id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_records" ADD CONSTRAINT "user_records_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_records" ADD CONSTRAINT "user_records_department_id_departments_id_fk" FOREIGN KEY ("department_id") REFERENCES "public"."departments"("id") ON DELETE no action ON UPDATE no action;

@@ -1,7 +1,7 @@
 import { integer, pgTable, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { timestamps } from "./columns.helper.js";
-import { admins } from "./users.js";
+import { admins, userRecords } from "./users.js";
 
 // Tables
 export const organizations = pgTable("organizations", {
@@ -14,7 +14,7 @@ export const organizations = pgTable("organizations", {
 export const departments = pgTable("departments", {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
     name: text("name").notNull(),
-    organizationId: integer("organization_id").notNull().references(() => organizations.id),
+    organizationId: integer("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
     ...timestamps
 });
 
@@ -25,8 +25,10 @@ export const departmentRelations = relations(departments, ({ one }) => ({
         references: [organizations.id],
     }),
     admin: one(admins),
+    userRecord: one(userRecords)
 }));
 
 export const organizationRelations = relations(organizations, ({ many }) => ({
     departments: many(departments),
+    userRecord: one(userRecords)
 }));
