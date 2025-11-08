@@ -1,6 +1,6 @@
 CREATE TABLE "users"(
     "id" INTEGER NOT NULL,
-    "user_id" VARCHAR(255) NOT NULL,
+    "org_emp_id" VARCHAR(255) NOT NULL,
     "first_name" VARCHAR(255) NOT NULL,
     "last_name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
@@ -14,23 +14,21 @@ CREATE TABLE "users"(
 );
 ALTER TABLE
     "users" ADD PRIMARY KEY("id");
-ALTER TABLE
-    "users" ADD PRIMARY KEY("user_id");
 CREATE TABLE "department"(
     "id" INTEGER NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    "organization id" INTEGER NOT NULL
+    "organization_id" INTEGER NOT NULL
 );
 ALTER TABLE
     "department" ADD PRIMARY KEY("id");
 CREATE TABLE "admin"(
-    "admin_id" VARCHAR(255) NOT NULL,
+    "admin_id" INTEGER NOT NULL,
     "manages" INTEGER NOT NULL
 );
 ALTER TABLE
     "admin" ADD PRIMARY KEY("admin_id");
 CREATE TABLE "employee"(
-    "emp_id" VARCHAR(255) NOT NULL,
+    "emp_id" INTEGER NOT NULL,
     "is_approved" BOOLEAN NOT NULL,
     "admin_id" VARCHAR(255) NOT NULL
 );
@@ -38,7 +36,7 @@ ALTER TABLE
     "employee" ADD PRIMARY KEY("emp_id");
 CREATE TABLE "leave_balance"(
     "id" INTEGER NOT NULL,
-    "user_id" VARCHAR(255) NOT NULL,
+    "employee_id" INTEGER NOT NULL,
     "leave_type" INTEGER NOT NULL,
     "used_days" INTEGER NOT NULL,
     "remaining_days" INTEGER NOT NULL
@@ -47,6 +45,7 @@ ALTER TABLE
     "leave_balance" ADD PRIMARY KEY("id");
 CREATE TABLE "leave_type"(
     "id" INTEGER NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
     "description" TEXT NOT NULL,
     "max_days_per_year" INTEGER NOT NULL
 );
@@ -54,8 +53,8 @@ ALTER TABLE
     "leave_type" ADD PRIMARY KEY("id");
 CREATE TABLE "leave_request"(
     "id" BIGINT NOT NULL,
-    "employee_id" VARCHAR(255) NOT NULL,
-    "approver_id" VARCHAR(255) NOT NULL,
+    "employee_id" INTEGER NOT NULL,
+    "approver_id" INTEGER NOT NULL,
     "leave_type" INTEGER NOT NULL,
     "status" VARCHAR(255) CHECK
         ("status" IN('')) NOT NULL,
@@ -85,17 +84,11 @@ CREATE TABLE "User Record"(
 ALTER TABLE
     "User Record" ADD PRIMARY KEY("id");
 ALTER TABLE
-    "User Record" ADD CONSTRAINT "user record_user_id_foreign" FOREIGN KEY("user_id") REFERENCES "users"("id");
+    "employee" ADD CONSTRAINT "employee_emp_id_foreign" FOREIGN KEY("emp_id") REFERENCES "users"("id");
 ALTER TABLE
     "leave_request" ADD CONSTRAINT "leave_request_approver_id_foreign" FOREIGN KEY("approver_id") REFERENCES "admin"("admin_id");
 ALTER TABLE
-    "admin" ADD CONSTRAINT "admin_admin_id_foreign" FOREIGN KEY("admin_id") REFERENCES "users"("user_id");
-ALTER TABLE
-    "employee" ADD CONSTRAINT "employee_emp_id_foreign" FOREIGN KEY("emp_id") REFERENCES "leave_balance"("id");
-ALTER TABLE
-    "employee" ADD CONSTRAINT "employee_emp_id_foreign" FOREIGN KEY("emp_id") REFERENCES "users"("user_id");
-ALTER TABLE
-    "department" ADD CONSTRAINT "department_organization id_foreign" FOREIGN KEY("organization id") REFERENCES "User Record"("department_id");
+    "department" ADD CONSTRAINT "department_organization_id_foreign" FOREIGN KEY("organization_id") REFERENCES "User Record"("department_id");
 ALTER TABLE
     "users" ADD CONSTRAINT "users_department_foreign" FOREIGN KEY("department") REFERENCES "department"("id");
 ALTER TABLE
@@ -107,8 +100,14 @@ ALTER TABLE
 ALTER TABLE
     "leave_balance" ADD CONSTRAINT "leave_balance_leave_type_foreign" FOREIGN KEY("leave_type") REFERENCES "leave_type"("id");
 ALTER TABLE
+    "admin" ADD CONSTRAINT "admin_admin_id_foreign" FOREIGN KEY("admin_id") REFERENCES "users"("id");
+ALTER TABLE
     "User Record" ADD CONSTRAINT "user record_organization_id_foreign" FOREIGN KEY("organization_id") REFERENCES "organization"("id");
 ALTER TABLE
     "employee" ADD CONSTRAINT "employee_admin_id_foreign" FOREIGN KEY("admin_id") REFERENCES "admin"("admin_id");
 ALTER TABLE
+    "leave_balance" ADD CONSTRAINT "leave_balance_employee_id_foreign" FOREIGN KEY("employee_id") REFERENCES "employee"("emp_id");
+ALTER TABLE
     "department" ADD CONSTRAINT "department_name_foreign" FOREIGN KEY("name") REFERENCES "organization"("location");
+ALTER TABLE
+    "User Record" ADD CONSTRAINT "user record_id_foreign" FOREIGN KEY("id") REFERENCES "users"("id");
