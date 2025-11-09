@@ -1,11 +1,11 @@
 {
-  "id": "80121545-59f0-40fa-94dd-d4e20012a869",
+  "id": "dbcf24e3-2bd8-47ed-afca-5d911326a30f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.adimn": {
-      "name": "adimn",
+    "public.admin": {
+      "name": "admin",
       "schema": "",
       "columns": {
         "admin_id": {
@@ -37,9 +37,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "adimn_admin_id_users_id_fk": {
-          "name": "adimn_admin_id_users_id_fk",
-          "tableFrom": "adimn",
+        "admin_admin_id_users_id_fk": {
+          "name": "admin_admin_id_users_id_fk",
+          "tableFrom": "admin",
           "tableTo": "users",
           "columnsFrom": [
             "admin_id"
@@ -50,9 +50,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "adimn_manages_departments_id_fk": {
-          "name": "adimn_manages_departments_id_fk",
-          "tableFrom": "adimn",
+        "admin_manages_departments_id_fk": {
+          "name": "admin_manages_departments_id_fk",
+          "tableFrom": "admin",
           "tableTo": "departments",
           "columnsFrom": [
             "manages"
@@ -193,10 +193,10 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "employees_admin_id_adimn_admin_id_fk": {
-          "name": "employees_admin_id_adimn_admin_id_fk",
+        "employees_admin_id_admin_admin_id_fk": {
+          "name": "employees_admin_id_admin_admin_id_fk",
           "tableFrom": "employees",
-          "tableTo": "adimn",
+          "tableTo": "admin",
           "columnsFrom": [
             "admin_id"
           ],
@@ -422,10 +422,10 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "leave_requests_approver_id_adimn_admin_id_fk": {
-          "name": "leave_requests_approver_id_adimn_admin_id_fk",
+        "leave_requests_approver_id_admin_admin_id_fk": {
+          "name": "leave_requests_approver_id_admin_admin_id_fk",
           "tableFrom": "leave_requests",
-          "tableTo": "adimn",
+          "tableTo": "admin",
           "columnsFrom": [
             "approver_id"
           ],

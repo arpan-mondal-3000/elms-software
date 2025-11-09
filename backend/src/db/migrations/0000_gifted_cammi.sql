@@ -1,6 +1,6 @@
 CREATE TYPE "public"."role" AS ENUM('admin', 'employee');--> statement-breakpoint
 CREATE TYPE "public"."statuses" AS ENUM('pending', 'approved', 'rejected', 'canceled');--> statement-breakpoint
-CREATE TABLE "adimn" (
+CREATE TABLE "admin" (
 	"admin_id" integer PRIMARY KEY NOT NULL,
 	"manages" integer NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -90,15 +90,15 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-ALTER TABLE "adimn" ADD CONSTRAINT "adimn_admin_id_users_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "adimn" ADD CONSTRAINT "adimn_manages_departments_id_fk" FOREIGN KEY ("manages") REFERENCES "public"."departments"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "admin" ADD CONSTRAINT "admin_admin_id_users_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "admin" ADD CONSTRAINT "admin_manages_departments_id_fk" FOREIGN KEY ("manages") REFERENCES "public"."departments"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "departments" ADD CONSTRAINT "departments_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "employees" ADD CONSTRAINT "employees_employee_id_users_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "employees" ADD CONSTRAINT "employees_admin_id_adimn_admin_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."adimn"("admin_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "employees" ADD CONSTRAINT "employees_admin_id_admin_admin_id_fk" FOREIGN KEY ("admin_id") REFERENCES "public"."admin"("admin_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "leave_balances" ADD CONSTRAINT "leave_balances_employee_id_employees_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("employee_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "leave_balances" ADD CONSTRAINT "leave_balances_leave_type_leave_types_id_fk" FOREIGN KEY ("leave_type") REFERENCES "public"."leave_types"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "leave_requests" ADD CONSTRAINT "leave_requests_employee_id_employees_employee_id_fk" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("employee_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "leave_requests" ADD CONSTRAINT "leave_requests_approver_id_adimn_admin_id_fk" FOREIGN KEY ("approver_id") REFERENCES "public"."adimn"("admin_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "leave_requests" ADD CONSTRAINT "leave_requests_approver_id_admin_admin_id_fk" FOREIGN KEY ("approver_id") REFERENCES "public"."admin"("admin_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "leave_requests" ADD CONSTRAINT "leave_requests_leave_type_leave_types_id_fk" FOREIGN KEY ("leave_type") REFERENCES "public"."leave_types"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_records" ADD CONSTRAINT "user_records_id_users_id_fk" FOREIGN KEY ("id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_records" ADD CONSTRAINT "user_records_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
