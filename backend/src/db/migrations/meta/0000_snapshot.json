@@ -1,11 +1,11 @@
 {
-  "id": "dbcf24e3-2bd8-47ed-afca-5d911326a30f",
+  "id": "5e8ad21a-9c29-4120-90fd-d2eee88d0054",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.admin": {
-      "name": "admin",
+    "public.admins": {
+      "name": "admins",
       "schema": "",
       "columns": {
         "admin_id": {
@@ -37,9 +37,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "admin_admin_id_users_id_fk": {
-          "name": "admin_admin_id_users_id_fk",
-          "tableFrom": "admin",
+        "admins_admin_id_users_id_fk": {
+          "name": "admins_admin_id_users_id_fk",
+          "tableFrom": "admins",
           "tableTo": "users",
           "columnsFrom": [
             "admin_id"
@@ -50,9 +50,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "admin_manages_departments_id_fk": {
-          "name": "admin_manages_departments_id_fk",
-          "tableFrom": "admin",
+        "admins_manages_departments_id_fk": {
+          "name": "admins_manages_departments_id_fk",
+          "tableFrom": "admins",
           "tableTo": "departments",
           "columnsFrom": [
             "manages"
@@ -80,7 +80,7 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
+            "type": "byDefault",
             "name": "departments_id_seq",
             "schema": "public",
             "increment": "1",
@@ -193,10 +193,10 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "employees_admin_id_admin_admin_id_fk": {
-          "name": "employees_admin_id_admin_admin_id_fk",
+        "employees_admin_id_admins_admin_id_fk": {
+          "name": "employees_admin_id_admins_admin_id_fk",
           "tableFrom": "employees",
-          "tableTo": "admin",
+          "tableTo": "admins",
           "columnsFrom": [
             "admin_id"
           ],
@@ -223,7 +223,7 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
+            "type": "byDefault",
             "name": "leave_balances_id_seq",
             "schema": "public",
             "increment": "1",
@@ -319,7 +319,7 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
+            "type": "byDefault",
             "name": "leave_requests_id_seq",
             "schema": "public",
             "increment": "1",
@@ -422,10 +422,10 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "leave_requests_approver_id_admin_admin_id_fk": {
-          "name": "leave_requests_approver_id_admin_admin_id_fk",
+        "leave_requests_approver_id_admins_admin_id_fk": {
+          "name": "leave_requests_approver_id_admins_admin_id_fk",
           "tableFrom": "leave_requests",
-          "tableTo": "admin",
+          "tableTo": "admins",
           "columnsFrom": [
             "approver_id"
           ],
@@ -465,7 +465,7 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
+            "type": "byDefault",
             "name": "leave_types_id_seq",
             "schema": "public",
             "increment": "1",
@@ -528,7 +528,7 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
+            "type": "byDefault",
             "name": "organizations_id_seq",
             "schema": "public",
             "increment": "1",
@@ -669,7 +669,7 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
-            "type": "always",
+            "type": "byDefault",
             "name": "users_id_seq",
             "schema": "public",
             "increment": "1",
