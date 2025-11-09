@@ -22,7 +22,7 @@ export const users = pgTable("users", {
     ...timestamps
 });
 
-export const admins = pgTable("adimn", {
+export const admins = pgTable("admin", {
     adminId: integer("admin_id").notNull().primaryKey().references(() => users.id, { onDelete: "cascade" }),
     manages: integer("manages").notNull().references(() => departments.id),
     ...timestamps
