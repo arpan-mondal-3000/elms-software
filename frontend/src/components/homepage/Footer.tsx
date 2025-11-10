@@ -92,7 +92,7 @@ export function Footer() {
             </div>
             <span className="font-semibold">ProLeave</span>
           </div>
-          <p className="text-sm text-muted-foreground">&copy; 2025 ProLeve. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">&copy; 2025 ProLeave. All rights reserved.</p>
         </div>
       </div>
     </footer>
