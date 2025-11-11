@@ -3,6 +3,9 @@ import "dotenv/config";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
+// Routers
+import authRouter from "./routes/authRoutes.js";
+
 const app = express();
 
 // middlewares setup
@@ -27,6 +30,8 @@ app.use(cors({
 app.get("/api", (req, res) => {
     res.json({ message: "Hello from employee leave management system." });
 })
+
+app.use("/api/auth", authRouter);
 
 // Listen for incoming connections
 const PORT = process.env.PORT;
