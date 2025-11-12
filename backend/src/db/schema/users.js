@@ -57,7 +57,7 @@ export const employees = pgTable("employees", {
 export const userRecords = pgTable("user_records", {
   id: integer("id")
     .primaryKey()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   organizationId: integer("organization_id").references(() => organizations.id),
   departmentId: integer("department_id").references(() => departments.id),
   ...timestamps,
