@@ -27,6 +27,7 @@ export const users = pgTable("users", {
   role: roles("role").notNull().default("employee"),
   address: text("address").notNull(),
   joiningDate: date("joining_date").notNull(),
+  refreshToken: text("refresh_token"),
   ...timestamps,
 });
 

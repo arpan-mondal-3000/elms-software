@@ -10,9 +10,12 @@ import LeaveRequests from "./pages/admin/LeaveRequests"
 import Analytics from "./pages/admin/Analytics"
 
 import EmployeeDashboard from "./pages/employee/Dashboard"
-
+import Status from "./pages/employee/Status"
+import ApplyForLeave from "./pages/employee/ApplyForLeave"
+import ViewRemainingLeave from "./pages/employee/ViewRemainingLeave"
 // Library
 import { Routes, Route } from "react-router"
+import EmployeeDashboardHome from "./pages/employee/EmployeeDashboardHome"
 
 function App() {
   return (
@@ -27,7 +30,15 @@ function App() {
           <Route path="leave-requests" element={<LeaveRequests />} />
           <Route path="analytics" element={<Analytics />} />
         </Route>
-        <Route path="employee" element={<EmployeeDashboard />} />
+        <Route path="employee" element={<EmployeeDashboard/>} >
+          <Route index element={<EmployeeDashboardHome/>}/>
+          <Route path="apply-for-leave" element={<ApplyForLeave/>}/>
+          <Route path="status" element={<Status/>}/>
+          <Route path="remaining-leave" element={< ViewRemainingLeave/>}/>
+
+        
+
+        </Route>
       </Routes>
     </>
   )
