@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-export default function Status() {
-    return (
-        <>
-            <div>
-                Status
-            </div>
-        </>
-    )
-}
-=======
 "use client";
 
 import { useState } from "react";
@@ -161,4 +150,3 @@ export default function Status() {
     </div>
   );
 }
->>>>>>> 3f6c48310952b4737fb7f257ed7e48e75774342e
