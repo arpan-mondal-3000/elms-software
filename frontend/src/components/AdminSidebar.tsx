@@ -1,6 +1,8 @@
 import { Calendar, Home, Inbox, ChartNoAxesCombined, ChevronUp, User2 } from "lucide-react"
 import { Link } from "react-router"
 
+import { Button } from "./ui/button"
+
 import {
     Sidebar,
     SidebarContent,
@@ -20,6 +22,11 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu"
+
+import { toast } from "sonner"
+
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router"
 
 // Menu items
 const items = [
@@ -46,6 +53,20 @@ const items = [
 ]
 
 export function AdminSidebar() {
+    const { logout } = useAuthStore();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate("/");
+            toast.success("Successfully logged out.");
+        } catch (err) {
+            console.error("Error in logout: ", err);
+            toast.error("Error in logout!");
+        }
+    }
+
     return (
         <Sidebar>
             <SidebarHeader>
@@ -95,7 +116,7 @@ export function AdminSidebar() {
                                     <span>My Account</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <span className="text-red-400">Sign out</span>
+                                    <Button variant="destructive" className="w-full" onClick={handleLogout}>Sign out</Button>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

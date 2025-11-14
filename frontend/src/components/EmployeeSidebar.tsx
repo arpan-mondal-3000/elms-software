@@ -1,6 +1,8 @@
 import { Calendar, Home, Inbox, ChevronUp, User2 } from "lucide-react"
 import { Link } from "react-router"
 
+import { Button } from "./ui/button"
+
 import {
     Sidebar,
     SidebarContent,
@@ -20,6 +22,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu"
+
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router"
 
 // Menu items
 const items = [
@@ -47,6 +52,14 @@ const items = [
 ]
 
 export function EmployeeSidebar() {
+    const { logout } = useAuthStore();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await logout();
+        navigate("/");
+    }
+
     return (
         <Sidebar>
             <SidebarHeader>
@@ -96,7 +109,7 @@ export function EmployeeSidebar() {
                                     <span>My Account</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <span className="text-red-400">Sign out</span>
+                                    <Button variant="destructive" className="w-full" onClick={handleLogout}>Sign out</Button>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
