@@ -2,7 +2,7 @@
 import Banner from "../assets/auth_banner.png"
 
 // Types
-import { type Employee, type Organization, type Department } from "../lib/types"
+import { type Organization, type Department, type EmployeeData } from "../lib/types"
 
 // Library
 import { useState } from "react"
@@ -45,29 +45,29 @@ export const organizations: Organization[] = [
 ];
 
 export const departments: Department[] = [
-    { id: 1, name: "Engineering", org_id: 1 },
-    { id: 2, name: "Human Resources", org_id: 1 },
-    { id: 3, name: "Research & Development", org_id: 2 },
-    { id: 4, name: "Marketing", org_id: 2 },
-    { id: 5, name: "Sales", org_id: 3 },
-    { id: 6, name: "Customer Support", org_id: 3 },
-    { id: 7, name: "Product Design", org_id: 4 },
-    { id: 8, name: "Operations", org_id: 5 },
-    { id: 9, name: "Finance", org_id: 5 },
+    { id: 1, name: "Engineering", organizationId: 1 },
+    { id: 2, name: "Human Resources", organizationId: 1 },
+    { id: 3, name: "Research & Development", organizationId: 2 },
+    { id: 4, name: "Marketing", organizationId: 2 },
+    { id: 5, name: "Sales", organizationId: 3 },
+    { id: 6, name: "Customer Support", organizationId: 3 },
+    { id: 7, name: "Product Design", organizationId: 4 },
+    { id: 8, name: "Operations", organizationId: 5 },
+    { id: 9, name: "Finance", organizationId: 5 },
 ];
 
 export default function Register() {
-    const [userData, setUserData] = useState<Employee>({
+    const [userData, setUserData] = useState<EmployeeData>({
         email: "",
-        emp_id: "",
-        first_name: "",
-        last_name: "",
+        orgEmpId: "",
+        firstName: "",
+        lastName: "",
         password: "",
-        contact_no: "",
-        organization_id: null,
-        department_id: null,
+        contactNo: "",
+        organizationId: null,
+        departmentId: null,
         address: "",
-        joining_date: new Date(),
+        joiningDate: new Date(),
     });
     const [openOrgBox, setOpenOrgBox] = useState(false);
     const [openDeptBox, setOpenDeptBox] = useState(false);
@@ -96,16 +96,16 @@ export default function Register() {
                                         <Field>
                                             <FieldLabel>First name</FieldLabel>
                                             <Input
-                                                value={userData.first_name}
-                                                onChange={(e) => setUserData((prev) => ({ ...prev, first_name: e.target.value }))}
+                                                value={userData.firstName}
+                                                onChange={(e) => setUserData((prev) => ({ ...prev, firstName: e.target.value }))}
                                                 required
                                             />
                                         </Field>
                                         <Field>
                                             <FieldLabel>Last name</FieldLabel>
                                             <Input
-                                                value={userData.last_name}
-                                                onChange={(e) => setUserData((prev) => ({ ...prev, last_name: e.target.value }))}
+                                                value={userData.lastName}
+                                                onChange={(e) => setUserData((prev) => ({ ...prev, lastName: e.target.value }))}
                                                 required
                                             />
                                         </Field>
@@ -137,8 +137,8 @@ export default function Register() {
                                                         aria-expanded={openOrgBox}
                                                         className="w-[200px] justify-between"
                                                     >
-                                                        {organizations && userData.organization_id
-                                                            ? organizations.find((org) => org.id === userData.organization_id)?.name
+                                                        {organizations && userData.organizationId
+                                                            ? organizations.find((org) => org.id === userData.organizationId)?.name
                                                             : "Select Organization..."}
                                                         <ChevronsUpDown className="opacity-50" />
                                                     </Button>
@@ -154,7 +154,7 @@ export default function Register() {
                                                                         key={org.id}
                                                                         value={org.name}
                                                                         onSelect={(currentValue) => {
-                                                                            setUserData((prev) => ({ ...prev, department_id: null, organization_id: (organizations ? organizations.find((o) => o.name === currentValue)?.id : null) }));
+                                                                            setUserData((prev) => ({ ...prev, departmentId: null, organizationId: (organizations ? organizations.find((o) => o.name === currentValue)?.id : null) }));
                                                                             setOpenOrgBox(false);
                                                                         }}
                                                                     >
@@ -162,7 +162,7 @@ export default function Register() {
                                                                         <Check
                                                                             className={cn(
                                                                                 "ml-auto",
-                                                                                userData.organization_id === org.id ? "opacity-100" : "opacity-0"
+                                                                                userData.organizationId === org.id ? "opacity-100" : "opacity-0"
                                                                             )}
                                                                         />
                                                                     </CommandItem>
@@ -182,10 +182,10 @@ export default function Register() {
                                                         role="combobox"
                                                         aria-expanded={openDeptBox}
                                                         className="w-[200px] justify-between"
-                                                        disabled={userData.organization_id ? false : true}
+                                                        disabled={userData.organizationId ? false : true}
                                                     >
-                                                        {organizations && userData.organization_id && departments && userData.department_id
-                                                            ? departments.find((dept) => dept.id === userData.department_id)?.name
+                                                        {organizations && userData.organizationId && departments && userData.departmentId
+                                                            ? departments.find((dept) => dept.id === userData.departmentId)?.name
                                                             : "Select Department..."}
                                                         <ChevronsUpDown className="opacity-50" />
                                                     </Button>
@@ -196,12 +196,12 @@ export default function Register() {
                                                         <CommandList>
                                                             <CommandEmpty>No Departments found.</CommandEmpty>
                                                             <CommandGroup>
-                                                                {departments.filter((d) => d.org_id === userData.organization_id).map((dept) => (
+                                                                {departments.filter((d) => d.organizationId === userData.organizationId).map((dept) => (
                                                                     <CommandItem
                                                                         key={dept.id}
                                                                         value={dept.name}
                                                                         onSelect={(currentValue) => {
-                                                                            setUserData((prev) => ({ ...prev, department_id: (organizations ? departments.find((d) => d.name === currentValue)?.id : null) }));
+                                                                            setUserData((prev) => ({ ...prev, departmentId: (organizations ? departments.find((d) => d.name === currentValue)?.id : null) }));
                                                                             setOpenDeptBox(false);
                                                                         }}
                                                                     >
@@ -209,7 +209,7 @@ export default function Register() {
                                                                         <Check
                                                                             className={cn(
                                                                                 "ml-auto",
-                                                                                userData.department_id === dept.id ? "opacity-100" : "opacity-0"
+                                                                                userData.departmentId === dept.id ? "opacity-100" : "opacity-0"
                                                                             )}
                                                                         />
                                                                     </CommandItem>
@@ -225,22 +225,22 @@ export default function Register() {
                                         <Field>
                                             <FieldLabel>Employee ID</FieldLabel>
                                             <Input
-                                                value={userData.emp_id}
-                                                onChange={(e) => setUserData((prev) => ({ ...prev, emp_id: e.target.value }))}
+                                                value={userData.orgEmpId}
+                                                onChange={(e) => setUserData((prev) => ({ ...prev, orgEmpId: e.target.value }))}
                                                 required
                                             />
                                         </Field>
                                         <Field>
                                             <FieldLabel>Joining date</FieldLabel>
-                                            <DatePicker date={userData.joining_date} setDate={(date: Date) => setUserData((prev) => ({ ...prev, joining_date: date }))} />
+                                            <DatePicker date={userData.joiningDate} setDate={(date: Date) => setUserData((prev) => ({ ...prev, joiningDate: date }))} />
                                         </Field>
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <Field>
                                             <FieldLabel>Contact no</FieldLabel>
                                             <Input
-                                                value={userData.contact_no}
-                                                onChange={(e) => setUserData((prev) => ({ ...prev, contact_no: e.target.value }))}
+                                                value={userData.contactNo}
+                                                onChange={(e) => setUserData((prev) => ({ ...prev, contactNo: e.target.value }))}
                                                 required
                                             />
                                         </Field>

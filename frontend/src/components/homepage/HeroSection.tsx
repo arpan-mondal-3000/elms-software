@@ -1,8 +1,11 @@
 import { Button } from "../ui/button"
 import { ArrowRight, CheckCircle } from "lucide-react"
 import banner from "@/assets/home_page_banner.jpg"
+import { useNavigate } from "react-router"
 
 export function HeroSection() {
+  const navigate = useNavigate();
+
   return (
     <section className="relative py-20 md:py-32 overflow-hidden">
       <div className="absolute inset-0 -z-10">
@@ -31,8 +34,8 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-base">
-              Register your Organization
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-base" onClick={() => navigate("/register")}>
+              Register as Employee under your Organization
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
             <Button size="lg" variant="outline" className="text-base bg-transparent">

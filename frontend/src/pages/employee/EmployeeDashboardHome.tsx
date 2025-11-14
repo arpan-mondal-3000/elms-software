@@ -1,7 +1,9 @@
-export default function EmployeeDashboardHome(){
-    return(
+export default function EmployeeDashboardHome() {
+    return (
         <>
-            EmployeeDashBoard
+            <div>
+                EmployeeDashBoard
+            </div>
         </>
     )
 }

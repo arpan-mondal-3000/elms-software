@@ -1,7 +1,10 @@
 import { Button } from "../ui/button"
 import { ArrowRight } from "lucide-react"
+import { useNavigate } from "react-router"
 
 export function CTASection() {
+  const navigate = useNavigate();
+
   return (
     <section id="join" className="py-20 md:py-32 bg-linear-to-r from-primary/10 via-accent/5 to-primary/10 border-t border-border">
       <div className="container mx-auto px-4">
@@ -12,7 +15,7 @@ export function CTASection() {
           <p className="text-lg text-muted-foreground mb-8 text-balance">
             Join hundreds of companies that have streamlined their HR operations with ProLeave. Start tracking your leaves now.
           </p>
-          <Button size="lg" className="bg-primary hover:bg-primary/90 text-base">
+          <Button size="lg" className="bg-primary hover:bg-primary/90 text-base" onClick={() => navigate("/login")}>
             Start tracking employee leave
             <ArrowRight className="ml-2 w-4 h-4" />
           </Button>

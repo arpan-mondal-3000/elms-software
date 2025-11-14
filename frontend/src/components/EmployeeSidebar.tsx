@@ -39,14 +39,14 @@ const items = [
         icon: Calendar,
     },
     {
-        title:"View Remaining Leaves",
-        url:"/employee/remaining-leave",
+        title: "View Remaining Leaves",
+        url: "/employee/remaining-leave",
         icon: Calendar
     }
-   
+
 ]
 
-export function AdminSidebar() {
+export function EmployeeSidebar() {
     return (
         <Sidebar>
             <SidebarHeader>
@@ -84,7 +84,7 @@ export function AdminSidebar() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton>
-                                    <User2 /> Hello Admin
+                                    <User2 /> Hello Employee
                                     <ChevronUp className="ml-auto" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>

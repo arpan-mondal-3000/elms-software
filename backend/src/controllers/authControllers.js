@@ -68,7 +68,7 @@ export const register = async (req, res) => {
       .returning();
 
     if (!newUser) {
-      console.log("User insertion unsuccessful");
+      console.error("User insertion unsuccessful");
       return res.status(500).json({ success: false, message: "Error in registering employee!" });
     }
 
@@ -90,7 +90,7 @@ export const register = async (req, res) => {
 
     return res.status(200).json({ success: true, message: "Registration successful wait for admin approval." });
   } catch (err) {
-    console.log("Error in registration: ", err);
+    console.error("Error in registration: ", err);
     return res.status(500).json({ success: false, message: "Error in registering employee!" });
   }
 };
@@ -111,7 +111,7 @@ export const login = async (req, res) => {
     }
 
     // Check if the password matches
-    const match = bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res
         .status(400)
@@ -140,9 +140,9 @@ export const login = async (req, res) => {
       // Send data and cookies
       const accessToken = generateAccessToken(user);
       const refreshToken = generateRefreshToken(user);
-      //Update refresh token in database.
+      // Update refresh token in database.
       await db.update(users).set({ refreshToken }).where(eq(users.id, user.id));
-
+      console.log("Employee logged in with ID: ", user.id);
       return res
         .cookie("accessToken", accessToken, {
           httpOnly: true,
@@ -160,7 +160,7 @@ export const login = async (req, res) => {
         .json({
           success: true,
           message: "Login successful.",
-          data: {
+          user: {
             id: user.id,
             orgEmpId: user.orgEmpId,
             firstName: user.firstName,
@@ -189,6 +189,7 @@ export const login = async (req, res) => {
       const refreshToken = generateRefreshToken(user);
 
       await db.update(users).set({ refreshToken }).where(eq(users.id, user.id));
+      console.log("Admin logged in with ID: ", user.id);
       return res
         .cookie("accessToken", accessToken, {
           httpOnly: true,
@@ -206,7 +207,7 @@ export const login = async (req, res) => {
         .json({
           success: true,
           message: "Login Successful",
-          data: {
+          user: {
             id: user.id,
             orgEmpId: user.orgEmpId,
             firstName: user.firstName,
@@ -225,7 +226,7 @@ export const login = async (req, res) => {
       .status(400)
       .json({ success: false, message: "Invalid credentials!" });
   } catch (err) {
-    console.log("Error in login: ", err);
+    console.error("Error in login: ", err);
     res
       .status(500)
       .json({ success: false, message: "Server error while logging in!" });
@@ -281,10 +282,38 @@ export const refreshAccessToken = async (req, res) => {
         });
     });
   } catch (err) {
-    console.log("error in refreshing access token :", err);
+    console.error("error in refreshing access token :", err);
     res.status(500).json({
       success: false,
       message: "server error in refreshing access token ",
     });
   }
 };
+
+export const logout = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    if (userId) {
+      // Make refreshToken null in database
+      await db.update(users).set({ refreshToken: null }).where(eq(users.id, userId));
+
+      // Clear accessToken and refreshToken in client side
+      res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+      });
+
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+      });
+
+      return res.status(200).json({ success: false, message: "Logged out successfully" });
+    }
+  } catch (err) {
+    console.error("Error in logout: ", err);
+    return res.status(500).json({ success: false, message: "Error logging out" });
+  }
+}
