@@ -7,5 +7,5 @@ export type Organization = {
 export type Department = {
     id: number;
     name: string;
-    org_id: number;
+    organizationId: number;
 }

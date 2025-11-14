@@ -1,7 +1,9 @@
-export default function Status(){
-    return(
+export default function Status() {
+    return (
         <>
-            Status
+            <div>
+                Status
+            </div>
         </>
     )
 }

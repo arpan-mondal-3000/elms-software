@@ -16,6 +16,7 @@ import ViewRemainingLeave from "./pages/employee/ViewRemainingLeave"
 // Library
 import { Routes, Route } from "react-router"
 import EmployeeDashboardHome from "./pages/employee/EmployeeDashboardHome"
+import { Toaster } from "./components/ui/sonner"
 
 function App() {
   return (
@@ -30,16 +31,14 @@ function App() {
           <Route path="leave-requests" element={<LeaveRequests />} />
           <Route path="analytics" element={<Analytics />} />
         </Route>
-        <Route path="employee" element={<EmployeeDashboard/>} >
-          <Route index element={<EmployeeDashboardHome/>}/>
-          <Route path="apply-for-leave" element={<ApplyForLeave/>}/>
-          <Route path="status" element={<Status/>}/>
-          <Route path="remaining-leave" element={< ViewRemainingLeave/>}/>
-
-        
-
+        <Route path="employee" element={<EmployeeDashboard />} >
+          <Route index element={<EmployeeDashboardHome />} />
+          <Route path="apply-for-leave" element={<ApplyForLeave />} />
+          <Route path="status" element={<Status />} />
+          <Route path="remaining-leave" element={< ViewRemainingLeave />} />
         </Route>
       </Routes>
+      <Toaster />
     </>
   )
 }

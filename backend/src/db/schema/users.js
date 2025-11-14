@@ -57,7 +57,7 @@ export const employees = pgTable("employees", {
 export const userRecords = pgTable("user_records", {
   id: integer("id")
     .primaryKey()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   organizationId: integer("organization_id").references(() => organizations.id),
   departmentId: integer("department_id").references(() => departments.id),
   ...timestamps,
@@ -65,10 +65,20 @@ export const userRecords = pgTable("user_records", {
 
 // Relations
 export const userRelations = relations(users, ({ one }) => ({
-  admin: one(admins),
-  employee: one(employees),
-  userRecord: one(userRecords),
+  admin: one(admins, {
+    fields: [users.id],
+    references: [admins.adminId],
+  }),
+  employee: one(employees, {
+    fields: [users.id],
+    references: [employees.employeeId],
+  }),
+  userRecord: one(userRecords, {
+    fields: [users.id],
+    references: [userRecords.id],
+  }),
 }));
+
 
 export const adminRelations = relations(admins, ({ one, many }) => ({
   user: one(users, {

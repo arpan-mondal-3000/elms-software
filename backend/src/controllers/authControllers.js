@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
 import { db } from "../db/db.js";
-import { users, employees, admins } from "../db/schema/users.js";
+import { users, employees, admins, userRecords } from "../db/schema/users.js";
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
@@ -21,47 +21,78 @@ const generateRefreshToken = (user) =>
   });
 
 export const register = async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    organizationId,
-    departmentId,
-    orgEmpId,
-    joiningDate,
-    contactNo,
-    address,
-  } = req.body;
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
-  if (user) {
-    return res
-      .status(403)
-      .json({ success: false, message: "User already exists" });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, process.env.SALT);
-
-  const newUser = await db
-    .insert(users)
-    .values({
+  try {
+    const {
       firstName,
       lastName,
       email,
-      password: hashedPassword,
-      role: "employee",
+      password,
       organizationId,
       departmentId,
       orgEmpId,
-      joiningDate: new Date(joiningDate),
+      joiningDate,
       contactNo,
       address,
-    })
-    .returning();
+    } = req.body;
+
+    // Check if the user already exists
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+    if (user) {
+      return res
+        .status(403)
+        .json({ success: false, message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, Number(process.env.SALT));
+
+    // Insert into users table
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        role: "employee",
+        organizationId,
+        departmentId,
+        orgEmpId,
+        joiningDate: new Date(joiningDate),
+        contactNo,
+        address,
+      })
+      .returning();
+
+    if (!newUser) {
+      console.error("User insertion unsuccessful");
+      return res.status(500).json({ success: false, message: "Error in registering employee!" });
+    }
+
+    // Get the admin id for the user
+    const [admin] = await db.select().from(admins).where(eq(admins.manages, Number(departmentId))).limit(1);
+
+    // Insert into employees table
+    await db.insert(employees).values({
+      employeeId: newUser.id,
+      adminId: admin.adminId
+    });
+
+    // Insert into userRecords table
+    await db.insert(userRecords).values({
+      id: newUser.id,
+      organizationId: Number(organizationId),
+      departmentId: Number(departmentId)
+    });
+
+    return res.status(200).json({ success: true, message: "Registration successful wait for admin approval." });
+  } catch (err) {
+    console.error("Error in registration: ", err);
+    return res.status(500).json({ success: false, message: "Error in registering employee!" });
+  }
 };
 
 export const login = async (req, res) => {
@@ -80,7 +111,7 @@ export const login = async (req, res) => {
     }
 
     // Check if the password matches
-    const match = bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res
         .status(400)
@@ -109,9 +140,9 @@ export const login = async (req, res) => {
       // Send data and cookies
       const accessToken = generateAccessToken(user);
       const refreshToken = generateRefreshToken(user);
-      //Update refresh token in database.
+      // Update refresh token in database.
       await db.update(users).set({ refreshToken }).where(eq(users.id, user.id));
-
+      console.log("Employee logged in with ID: ", user.id);
       return res
         .cookie("accessToken", accessToken, {
           httpOnly: true,
@@ -129,7 +160,7 @@ export const login = async (req, res) => {
         .json({
           success: true,
           message: "Login successful.",
-          data: {
+          user: {
             id: user.id,
             orgEmpId: user.orgEmpId,
             firstName: user.firstName,
@@ -158,6 +189,7 @@ export const login = async (req, res) => {
       const refreshToken = generateRefreshToken(user);
 
       await db.update(users).set({ refreshToken }).where(eq(users.id, user.id));
+      console.log("Admin logged in with ID: ", user.id);
       return res
         .cookie("accessToken", accessToken, {
           httpOnly: true,
@@ -175,7 +207,7 @@ export const login = async (req, res) => {
         .json({
           success: true,
           message: "Login Successful",
-          data: {
+          user: {
             id: user.id,
             orgEmpId: user.orgEmpId,
             firstName: user.firstName,
@@ -194,7 +226,7 @@ export const login = async (req, res) => {
       .status(400)
       .json({ success: false, message: "Invalid credentials!" });
   } catch (err) {
-    console.log("Error in login: ", err);
+    console.error("Error in login: ", err);
     res
       .status(500)
       .json({ success: false, message: "Server error while logging in!" });
@@ -235,7 +267,7 @@ export const refreshAccessToken = async (req, res) => {
       }
       // Generate a new Access Token.
       const newAccessToken = generateAccessToken(user);
-      //send the new Access Token
+      // Send the new Access Token
       res
         .cookie("accessToken", newAccessToken, {
           httpOnly: true,
@@ -250,10 +282,38 @@ export const refreshAccessToken = async (req, res) => {
         });
     });
   } catch (err) {
-    console.log("error in refreshing access token :", err);
+    console.error("error in refreshing access token :", err);
     res.status(500).json({
       success: false,
       message: "server error in refreshing access token ",
     });
   }
 };
+
+export const logout = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    if (userId) {
+      // Make refreshToken null in database
+      await db.update(users).set({ refreshToken: null }).where(eq(users.id, userId));
+
+      // Clear accessToken and refreshToken in client side
+      res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+      });
+
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+      });
+
+      return res.status(200).json({ success: false, message: "Logged out successfully" });
+    }
+  } catch (err) {
+    console.error("Error in logout: ", err);
+    return res.status(500).json({ success: false, message: "Error logging out" });
+  }
+}

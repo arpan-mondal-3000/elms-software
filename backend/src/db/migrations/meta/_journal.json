@@ -15,6 +15,13 @@
       "when": 1762857042642,
       "tag": "0001_rapid_cardiac",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1762984727697,
+      "tag": "0002_huge_azazel",
+      "breakpoints": true
     }
   ]
 }

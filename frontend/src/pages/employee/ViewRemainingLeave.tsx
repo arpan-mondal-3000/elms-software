@@ -1,7 +1,9 @@
-export default function ViewRemainingLeave(){
+export default function ViewRemainingLeave() {
     return (
         <>
-            ViewRemainingLeaves
+            <div>
+                ViewRemainingLeaves
+            </div>
         </>
     )
 }

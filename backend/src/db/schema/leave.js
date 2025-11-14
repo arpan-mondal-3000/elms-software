@@ -89,6 +89,6 @@ export const leaveRequestRelations = relations(leaveRequests, ({ one }) => ({
   }),
   leaveType: one(leaveTypes, {
     fields: [leaveRequests.leaveType],
-    references: [leaveType.id],
+    references: [leaveTypes.id],
   }),
 }));

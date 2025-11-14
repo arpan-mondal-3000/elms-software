@@ -1,6 +1,9 @@
 import { Button } from "../ui/button"
+import { useNavigate } from "react-router"
 
 export function Header() {
+  const navigate = useNavigate();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center justify-between mx-auto px-4">
@@ -24,10 +27,10 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button variant="ghost" className="hidden sm:inline-flex">
+          <Button variant="ghost" className="hidden sm:inline-flex" onClick={() => navigate("/login")}>
             Sign In
           </Button>
-          <Button className="bg-primary hover:bg-primary/90">Get Started</Button>
+          <Button className="bg-primary hover:bg-primary/90" onClick={() => navigate("/register")}>Register</Button>
         </div>
       </div>
     </header>
