@@ -10,8 +10,10 @@ export default function EmployeeDashboard() {
          return (
         <SidebarProvider>
             <AdminSidebar />
-            <main>
+            <main className="w-full">
+                <div className="bg-gray-100">
                 <SidebarTrigger />
+                </div>
                 <Outlet />
             </main>
         </SidebarProvider>
