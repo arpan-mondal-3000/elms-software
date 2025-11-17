@@ -12,7 +12,7 @@ type AuthState = {
     login: (email: string, password: string) => Promise<User>;
     register: (empData: EmployeeData) => Promise<void>;
     logout: () => Promise<void>;
-    fetchUser: () => Promise<void>;
+    fetchUser: () => Promise<User>;
 };
 
 export const useAuthStore = create(
@@ -54,6 +54,7 @@ export const useAuthStore = create(
                 try {
                     const res = await api.get("/user/profile");
                     set({ user: res.data.user });
+                    return res.data.user;
                 } catch {
                     set({ user: null });
                 } finally {
