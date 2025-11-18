@@ -5,7 +5,8 @@ import Banner from "../assets/auth_banner.png"
 import { type Organization, type Department, type EmployeeData } from "../lib/types"
 
 // Library
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { api } from "../api/api"
 
 // Components
 import {
@@ -76,6 +77,15 @@ export default function Register() {
         console.log(userData);
         alert("You have Registered successfully.");
     }
+
+    useEffect(() => {
+        // Fetch organizations and departments
+        const fetchOrgData = async () => {
+            const data = await api.get("/org/org-data");
+            console.log(data);
+        }
+        fetchOrgData();
+    }, [])
 
     return (
         <>

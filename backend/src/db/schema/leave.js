@@ -8,7 +8,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { timestamps } from "./columns.helper.js";
 import { employees, admins } from "./users.js";
-import { relations } from "drizzle-orm";
 
 // Enums
 export const statuses = pgEnum("statuses", [
@@ -60,35 +59,3 @@ export const leaveRequests = pgTable("leave_requests", {
   approvalDate: date("approval_date"),
   ...timestamps,
 });
-
-// Relations
-export const leaveTypeRelations = relations(leaveTypes, ({ many }) => ({
-  leaveBalance: many(leaveBalances),
-  leaveRequest: many(leaveRequests),
-}));
-
-export const leaveBalanceRelations = relations(leaveBalances, ({ one }) => ({
-  employee: one(employees, {
-    fields: [leaveBalances.employeeId],
-    references: [employees.employeeId],
-  }),
-  leaveType: one(leaveTypes, {
-    fields: [leaveBalances.leaveType],
-    references: [leaveTypes.id],
-  }),
-}));
-
-export const leaveRequestRelations = relations(leaveRequests, ({ one }) => ({
-  employee: one(employees, {
-    fields: [leaveRequests.employeeId],
-    references: [employees.employeeId],
-  }),
-  admin: one(admins, {
-    fields: [leaveRequests.approverId],
-    references: [admins.adminId],
-  }),
-  leaveType: one(leaveTypes, {
-    fields: [leaveRequests.leaveType],
-    references: [leaveTypes.id],
-  }),
-}));

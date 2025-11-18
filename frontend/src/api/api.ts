@@ -32,7 +32,8 @@ api.interceptors.response.use(
             if (!isRefreshing) {
                 isRefreshing = true;
                 try {
-                    await api.post("/refresh"); // refresh accessToken with refreshToken
+                    console.log("Trying to refresh access token...")
+                    await api.get("/auth/refresh"); // refresh accessToken with refreshToken
                     isRefreshing = false;
                     onRefreshed();
                 } catch (err) {

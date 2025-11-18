@@ -6,6 +6,7 @@ import cors from "cors";
 // Routers
 import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import orgRouter from "./routes/orgRoutes.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.get("/api", (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/org", orgRouter);
 
 // Listen for incoming connections
 const PORT = process.env.PORT;
