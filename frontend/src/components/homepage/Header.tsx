@@ -1,8 +1,25 @@
 import { Button } from "../ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu"
+
 import { useNavigate } from "react-router"
+import { useAuthStore } from "../../store/authStore";
+import { UserRound } from 'lucide-react';
+
 
 export function Header() {
   const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = async () => {
+    await logout();
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -25,14 +42,36 @@ export function Header() {
             Join
           </a>
         </nav>
-
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" className="hidden sm:inline-flex" onClick={() => navigate("/login")}>
-            Sign In
-          </Button>
-          <Button className="bg-primary hover:bg-primary/90" onClick={() => navigate("/register")}>Register</Button>
-        </div>
+        {user &&
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-10 h-10 rounded-full">
+                  <UserRound />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuLabel>Hello {user.firstName}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate(user.role === "employee" ? "/employee" : "/admin")}>
+                  Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-red-500" onClick={handleLogout}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        }
+        {!user &&
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" className="hidden sm:inline-flex" onClick={() => navigate("/login")}>
+              Sign In
+            </Button>
+            <Button className="bg-primary hover:bg-primary/90" onClick={() => navigate("/register")}>Register</Button>
+          </div>
+        }
       </div>
-    </header>
+    </header >
   )
 }

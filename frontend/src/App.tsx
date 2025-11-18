@@ -13,6 +13,9 @@ import EmployeeDashboard from "./pages/employee/Dashboard"
 import Status from "./pages/employee/Status"
 import ApplyForLeave from "./pages/employee/ApplyForLeave"
 import ViewRemainingLeave from "./pages/employee/ViewRemainingLeave"
+
+import ProtectRoute from "./components/ProtectRoute"
+
 // Library
 import { Routes, Route } from "react-router"
 import EmployeeDashboardHome from "./pages/employee/EmployeeDashboardHome"
@@ -25,17 +28,21 @@ function App() {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="admin" element={<AdminDashboard />}>
-          <Route index element={<AdminDashboardHome />} />
-          <Route path="view-registrations" element={<ViewRegistrations />} />
-          <Route path="leave-requests" element={<LeaveRequests />} />
-          <Route path="analytics" element={<Analytics />} />
+        <Route element={<ProtectRoute allowedRoles={["admin"]} />}>
+          <Route path="admin" element={<AdminDashboard />}>
+            <Route index element={<AdminDashboardHome />} />
+            <Route path="view-registrations" element={<ViewRegistrations />} />
+            <Route path="leave-requests" element={<LeaveRequests />} />
+            <Route path="analytics" element={<Analytics />} />
+          </Route>
         </Route>
-        <Route path="employee" element={<EmployeeDashboard />} >
-          <Route index element={<EmployeeDashboardHome />} />
-          <Route path="apply-for-leave" element={<ApplyForLeave />} />
-          <Route path="status" element={<Status />} />
-          <Route path="remaining-leave" element={< ViewRemainingLeave />} />
+        <Route element={<ProtectRoute allowedRoles={["employee"]} />}>
+          <Route path="employee" element={<EmployeeDashboard />} >
+            <Route index element={<EmployeeDashboardHome />} />
+            <Route path="apply-for-leave" element={<ApplyForLeave />} />
+            <Route path="status" element={<Status />} />
+            <Route path="remaining-leave" element={< ViewRemainingLeave />} />
+          </Route>
         </Route>
       </Routes>
       <Toaster />
