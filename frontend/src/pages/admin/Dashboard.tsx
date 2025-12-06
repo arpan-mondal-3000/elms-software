@@ -9,7 +9,7 @@ export default function AdminDashboard() {
     return (
         <SidebarProvider>
             <AdminSidebar />
-            <main>
+            <main className="w-full">
                 <SidebarTrigger />
                 <Outlet />
             </main>
