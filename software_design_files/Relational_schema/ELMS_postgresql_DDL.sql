@@ -10,7 +10,8 @@ CREATE TABLE "users"(
         ("role" IN('')) NOT NULL,
         "department" INTEGER NOT NULL,
         "address" TEXT NOT NULL,
-        "joining_date" DATE NOT NULL
+        "joining_date" DATE NOT NULL,
+        "refresh_token" TEXT NOT NULL
 );
 ALTER TABLE
     "users" ADD PRIMARY KEY("id");
@@ -88,15 +89,15 @@ ALTER TABLE
 ALTER TABLE
     "leave_request" ADD CONSTRAINT "leave_request_approver_id_foreign" FOREIGN KEY("approver_id") REFERENCES "admin"("admin_id");
 ALTER TABLE
-    "department" ADD CONSTRAINT "department_organization_id_foreign" FOREIGN KEY("organization_id") REFERENCES "User Record"("department_id");
-ALTER TABLE
-    "users" ADD CONSTRAINT "users_department_foreign" FOREIGN KEY("department") REFERENCES "department"("id");
+    "User Record" ADD CONSTRAINT "user record_department_id_foreign" FOREIGN KEY("department_id") REFERENCES "department"("id");
 ALTER TABLE
     "leave_request" ADD CONSTRAINT "leave_request_employee_id_foreign" FOREIGN KEY("employee_id") REFERENCES "employee"("emp_id");
 ALTER TABLE
     "admin" ADD CONSTRAINT "admin_manages_foreign" FOREIGN KEY("manages") REFERENCES "department"("id");
 ALTER TABLE
     "leave_request" ADD CONSTRAINT "leave_request_leave_type_foreign" FOREIGN KEY("leave_type") REFERENCES "leave_type"("id");
+ALTER TABLE
+    "department" ADD CONSTRAINT "department_organization_id_foreign" FOREIGN KEY("organization_id") REFERENCES "organization"("id");
 ALTER TABLE
     "leave_balance" ADD CONSTRAINT "leave_balance_leave_type_foreign" FOREIGN KEY("leave_type") REFERENCES "leave_type"("id");
 ALTER TABLE
@@ -107,7 +108,5 @@ ALTER TABLE
     "employee" ADD CONSTRAINT "employee_admin_id_foreign" FOREIGN KEY("admin_id") REFERENCES "admin"("admin_id");
 ALTER TABLE
     "leave_balance" ADD CONSTRAINT "leave_balance_employee_id_foreign" FOREIGN KEY("employee_id") REFERENCES "employee"("emp_id");
-ALTER TABLE
-    "department" ADD CONSTRAINT "department_name_foreign" FOREIGN KEY("name") REFERENCES "organization"("location");
 ALTER TABLE
     "User Record" ADD CONSTRAINT "user record_id_foreign" FOREIGN KEY("id") REFERENCES "users"("id");

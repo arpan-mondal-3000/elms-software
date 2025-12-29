@@ -7,10 +7,8 @@ import {
   date,
   boolean,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
 import { timestamps } from "./columns.helper.js";
 import { organizations, departments } from "./organization.js";
-import { leaveBalances, leaveRequests } from "./leave.js";
 
 // Enums
 export const roles = pgEnum("role", ["admin", "employee"]);
@@ -62,61 +60,3 @@ export const userRecords = pgTable("user_records", {
   departmentId: integer("department_id").references(() => departments.id),
   ...timestamps,
 });
-
-// Relations
-export const userRelations = relations(users, ({ one }) => ({
-  admin: one(admins, {
-    fields: [users.id],
-    references: [admins.adminId],
-  }),
-  employee: one(employees, {
-    fields: [users.id],
-    references: [employees.employeeId],
-  }),
-  userRecord: one(userRecords, {
-    fields: [users.id],
-    references: [userRecords.id],
-  }),
-}));
-
-
-export const adminRelations = relations(admins, ({ one, many }) => ({
-  user: one(users, {
-    fields: [admins.adminId],
-    references: [users.id],
-  }),
-  manages: one(departments, {
-    fields: [admins.manages],
-    references: [departments.id],
-  }),
-  employees: many(employees),
-  leaveRequest: many(leaveRequests),
-}));
-
-export const employeeRelations = relations(employees, ({ one, many }) => ({
-  user: one(users, {
-    fields: [employees.employeeId],
-    references: [users.id],
-  }),
-  admin: one(admins, {
-    fields: [employees.adminId],
-    references: [admins.adminId],
-  }),
-  leaveBalance: many(leaveBalances),
-  leaveRequest: many(leaveRequests),
-}));
-
-export const userRecordRelations = relations(userRecords, ({ one }) => ({
-  user: one(users, {
-    fields: [userRecords.id],
-    references: [users.id],
-  }),
-  organization: one(organizations, {
-    fields: [userRecords.organizationId],
-    references: [organizations.id],
-  }),
-  department: one(departments, {
-    fields: [userRecords.departmentId],
-    references: [departments.id],
-  }),
-}));

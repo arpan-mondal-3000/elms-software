@@ -32,13 +32,15 @@ api.interceptors.response.use(
             if (!isRefreshing) {
                 isRefreshing = true;
                 try {
-                    await api.post("/refresh"); // refresh accessToken with refreshToken
+                    console.log("Trying to refresh access token...")
+                    await fetch("/auth/refresh", { method: "GET", credentials: "include" }); // refresh accessToken with refreshToken
                     isRefreshing = false;
                     onRefreshed();
                 } catch (err) {
+                    console.log(err);
                     isRefreshing = false;
-                    useAuthStore.getState().logout(); // redirect to login of refresh fails
-                    window.location.href = "/login";
+                    useAuthStore.getState().user = null;
+                    window.location.href = "/login"; // redirect to login if refresh fails
                     return Promise.reject(err);
                 }
             }
