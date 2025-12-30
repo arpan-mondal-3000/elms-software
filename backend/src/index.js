@@ -8,6 +8,7 @@ import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import orgRouter from "./routes/orgRoutes.js";
+import leaveRouter from "./routes/leaveRoutes.js";
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/org", orgRouter);
+app.use("/api/leave", leaveRouter);
 
 // Listen for incoming connections
 const PORT = process.env.PORT;
