@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { eq } from "drizzle-orm";
 import { db } from "../db/db.js";
 import { users, employees, admins, userRecords } from "../db/schema/users.js";
+import { sendMail } from "../utils/mail.js";
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
@@ -72,8 +73,13 @@ export const register = async (req, res) => {
       return res.status(500).json({ success: false, message: "Error in registering employee!" });
     }
 
-    // Get the admin id for the user
-    const [admin] = await db.select().from(admins).where(eq(admins.manages, Number(departmentId))).limit(1);
+    // Get the admin id and email for the user
+    const [admin] = await db.select({
+      adminId: admins.adminId,
+      email: users.email
+    }).from(admins)
+      .innerJoin(users, eq(users.id, admins.adminId))
+      .where(eq(admins.manages, Number(departmentId))).limit(1);
 
     // Insert into employees table
     await db.insert(employees).values({
@@ -87,6 +93,52 @@ export const register = async (req, res) => {
       organizationId: Number(organizationId),
       departmentId: Number(departmentId)
     });
+
+    // Send email to admin
+    await sendMail(
+      admin.email,
+      "New registration request",
+      `A new registration request has been submitted by ${newUser.firstName} ${newUser.lastName}`,
+      `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; background: #f8fafc; padding: 24px; border-radius: 10px; border: 1px solid #e2e8f0;">
+        
+        <h2 style="color: #0f172a; margin-top: 0;">
+          New Registration Request
+        </h2>
+
+        <p style="font-size: 15px; color: #334155;">
+          A new registration request has been submitted by
+          <strong>${newUser.firstName} ${newUser.lastName}</strong>.
+        </p>
+
+        <p style="font-size: 15px; color: #334155;">
+          Please review the request and take the appropriate action.
+        </p>
+
+        <a 
+          href="${process.env.FRONTEND_URL}/admin/view-registrations"
+          style="
+            display: inline-block;
+            margin-top: 16px;
+            padding: 12px 20px;
+            background: #2563eb;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+          "
+        >
+          Review Request
+        </a>
+
+        <p style="font-size: 13px; color: #64748b; margin-top: 24px;">
+          — Proleave System
+        </p>
+
+      </div>
+      `
+    )
 
     return res.status(200).json({ success: true, message: "Registration successful wait for admin approval." });
   } catch (err) {
