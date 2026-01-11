@@ -30,7 +30,7 @@ export const getAllEmployeeLeaves = async (req, res) => {
     }
 }
 
-export const createLeaveRequst = async (req, res) => {
+export const createLeaveRequest = async (req, res) => {
     try {
         const { id: employeeId } = req.user;
         // Get the leave data from body
@@ -60,7 +60,7 @@ export const createLeaveRequst = async (req, res) => {
             return res.status(406).json({ success: false, message: "Start date must be less than or equal to end date of leave!" });
         }
 
-        //Check if the employee has sufficient leave balancess
+        //Check if the employee has sufficient leave balances
         const [leaveBalance] = await db.select()
             .from(leaveBalances)
             .where(and(eq(leaveBalances.employeeId, employeeId), eq(leaveBalances.leaveType, leaveType)))
