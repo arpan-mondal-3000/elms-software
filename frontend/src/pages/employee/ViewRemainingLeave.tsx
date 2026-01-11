@@ -75,7 +75,7 @@ export default function ViewRemainingLeaveShadcn(): JSX.Element {
       <div className="mx-auto max-w-7xl p-6">
         <div className="flex items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold">Leave Overview</h1>
+            <h1 className="text-4xl font-semibold tracking-tight leading-relaxed text-foreground">Leave Overview</h1>
             <p className="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">Your leave balance for the current year at a glance.</p>
           </div>
 
@@ -86,7 +86,7 @@ export default function ViewRemainingLeaveShadcn(): JSX.Element {
             </Button>
 
             <Button>
-              <Plus className="mr-2" size={14} /> Request Leave
+              <Plus className="" size={14} />Request Leave
             </Button>
           </div>
         </div>

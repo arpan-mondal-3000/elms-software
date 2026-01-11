@@ -4,7 +4,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 
 import AdminDashboard from "./pages/admin/Dashboard"
-import AdminDashboardHome from "./pages/admin/AdminDashboardHome"
+import AdminDashboardHome from "./pages/admin/AdminHome"
 import ViewRegistrations from "./pages/admin/ViewRegistrations"
 import LeaveRequests from "./pages/admin/LeaveRequests"
 import Analytics from "./pages/admin/Analytics"

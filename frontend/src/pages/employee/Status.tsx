@@ -108,7 +108,7 @@ export default function Status() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
+    <div className="flex justify-center items-start min-h-screen bg-gray-100 p-6 ">
       <Card className="w-full max-w-5xl">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-semibold">
@@ -142,10 +142,6 @@ export default function Status() {
             </TabsContent>
           </Tabs>
         </CardContent>
-
-        <CardFooter className="text-center text-sm text-gray-500">
-          Note: Approved and Rejected leaves move automatically from Pending.
-        </CardFooter>
       </Card>
     </div>
   );
