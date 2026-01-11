@@ -1,279 +1,276 @@
-// Library
-import { useEffect, useState } from "react"
-import { api } from "../../api/api"
-import { toast } from "sonner"
+import { useState } from "react";
+import { Check, X, Eye, Search, Filter } from "lucide-react";
 
-import { Button } from "../../components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Badge } from "../../components/ui/badge";
+import { Input } from "../../components/ui/input";
 import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "../../components/ui/card"
-
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../components/ui/table";
 import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "../../components/ui/tabs"
-
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "../../components/ui/alert-dialog"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 
-import { Oval } from "react-loader-spinner";
-
-type EmployeeData = {
-    id: number,
-    orgEmpId: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    contactNo: string,
-    address: string,
-    joiningDate: string,
-    isApproved: Boolean,
+interface Registration {
+  id: string;
+  name: string;
+  email: string;
+  department: string;
+  position: string;
+  joinDate: string;
+  status: "pending" | "approved" | "rejected";
+  submittedAt: string;
 }
 
-export default function ViewRegistrations() {
-    const [approvedEmployee, setApprovedEmployee] = useState<EmployeeData[]>([]);
-    const [unapprovedEmployee, setUnapprovedEmployee] = useState<EmployeeData[]>([]);
-    const [loading, setLoading] = useState<Boolean>(false);
+const mockRegistrations: Registration[] = [
+  { id: "1", name: "John Smith", email: "john.smith@company.com", department: "Engineering", position: "Software Developer", joinDate: "Jan 15, 2025", status: "pending", submittedAt: "Dec 28, 2024" },
+  { id: "2", name: "Sarah Johnson", email: "sarah.j@company.com", department: "Marketing", position: "Marketing Manager", joinDate: "Jan 20, 2025", status: "pending", submittedAt: "Dec 27, 2024" },
+  { id: "3", name: "Mike Brown", email: "mike.b@company.com", department: "Finance", position: "Financial Analyst", joinDate: "Jan 10, 2025", status: "approved", submittedAt: "Dec 20, 2024" },
+  { id: "4", name: "Emily Davis", email: "emily.d@company.com", department: "HR", position: "HR Specialist", joinDate: "Jan 25, 2025", status: "pending", submittedAt: "Dec 29, 2024" },
+  { id: "5", name: "Chris Wilson", email: "chris.w@company.com", department: "Engineering", position: "DevOps Engineer", joinDate: "Jan 5, 2025", status: "rejected", submittedAt: "Dec 15, 2024" },
+];
 
-    const handleApprove = async (id: number) => {
-        try {
-            setLoading(true);
-            await api.post("/admin/approve", { employeeId: id });
-            const approved = unapprovedEmployee.find((emp: EmployeeData) => emp.id === id);
-            setUnapprovedEmployee((prev) => prev.filter((emp: EmployeeData) => emp.id !== id));
-            if (approved)
-                setApprovedEmployee((prev) => [...prev, approved]);
-            toast.success(`${approved?.firstName} ${approved?.lastName} approved successfully.`);
-        } catch (err) {
-            console.error("Error approving employee: ", err);
-            toast.error("Error approving employee!");
-        } finally {
-            setLoading(false);
-        }
-    }
+const statusStyles = {
+  pending: "bg-warning/10 text-warning border-warning/20",
+  approved: "bg-success/10 text-success border-success/20",
+  rejected: "bg-destructive/10 text-destructive border-destructive/20",
+};
 
-    const handleReject = async (id: number) => {
-        try {
-            setLoading(true);
-            await api.post("/admin/reject", { employeeId: id });
-            const deleted = unapprovedEmployee.find((emp: EmployeeData) => emp.id === id);
-            setUnapprovedEmployee((prev) => prev.filter((emp: EmployeeData) => emp.id !== id));
-            toast.success(`${deleted?.firstName} ${deleted?.lastName} rejected successfully.`);
-        } catch (err) {
-            console.error("Error rejecting employee: ", err);
-            toast.error("Error rejecting employee!");
-        } finally {
-            setLoading(false);
-        }
-    }
+const ViewRegistrations = () => {
+  const [registrations, setRegistrations] = useState(mockRegistrations);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchEmployees = async () => {
-            try {
-                setLoading(true)
-                const data = await api.get("/admin/employees");
-                console.log(data.data.data);
-                setApprovedEmployee(data.data.data.filter((e: EmployeeData) => e.isApproved === true));
-                setUnapprovedEmployee(data.data.data.filter((e: EmployeeData) => e.isApproved === false));
-            } catch (err) {
-                console.error("Error fetching employees: ", err);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchEmployees();
-    }, [])
+  const filteredRegistrations = registrations.filter((reg) => {
+    const matchesSearch =
+      reg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      reg.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      reg.department.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterStatus === "all" || reg.status === filterStatus;
+    return matchesSearch && matchesFilter;
+  });
 
-    return (
-        <>
-            <div className="flex w-full flex-col gap-6">
-                <Tabs defaultValue="unapproved">
-                    <div className="m-10">
-                        <TabsList>
-                            <TabsTrigger value="unapproved">Unapproved</TabsTrigger>
-                            <TabsTrigger value="approved">Approved</TabsTrigger>
-                        </TabsList>
-                    </div>
-                    {loading ?
-                        <div className="flex items-center justify-center">
-                            <Oval
-                                visible={true}
-                                height="80"
-                                width="80"
-                                color="#000814"
-                                secondaryColor="#bad6ff"
-                                ariaLabel="oval-loading"
-                                wrapperStyle={{}}
-                                wrapperClass=""
-                            />
-                        </div>
-                        :
-                        <>
-                            <TabsContent value="unapproved">
-                                {unapprovedEmployee.length === 0 &&
-                                    <p className="mx-10 text-gray-500">No pending employee approval.</p>
-                                }
-                                {unapprovedEmployee.length !== 0 &&
-                                    unapprovedEmployee.map((emp) =>
-                                        <Card
-                                            className="mx-10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden"
-                                            key={emp.id}
-                                        >
-                                            <CardHeader className="flex flex-col items-center text-center pb-2">
-                                                {/* Profile Image */}
-                                                <img
-                                                    src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
-                                                    alt="Employee"
-                                                    className="w-28 h-28 rounded-full object-cover shadow-md border"
-                                                />
+  const handleApprove = (id: string) => {
+    setRegistrations((prev) =>
+      prev.map((reg) => (reg.id === id ? { ...reg, status: "approved" as const } : reg))
+    );
+    setViewDialogOpen(false);
+  };
 
-                                                <CardTitle className="text-2xl mt-4 font-bold">
-                                                    {emp.firstName} {emp.lastName}
-                                                </CardTitle>
-                                                <p className="text-sm text-gray-500">{emp.email}</p>
-                                            </CardHeader>
+  const handleReject = (id: string) => {
+    setRegistrations((prev) =>
+      prev.map((reg) => (reg.id === id ? { ...reg, status: "rejected" as const } : reg))
+    );
+    setViewDialogOpen(false);
+  };
 
-                                            <CardContent className="px-6">
-                                                <div className="mt-4">
-                                                    <div className="text-xl font-semibold mb-3 border-b pb-1">
-                                                        Employee Information
-                                                    </div>
+  const handleView = (registration: Registration) => {
+    setSelectedRegistration(registration);
+    setViewDialogOpen(true);
+  };
 
-                                                    <div className="space-y-2 text-gray-700">
-                                                        <p>
-                                                            <span className="font-semibold">Employee ID:</span> {emp.orgEmpId}
-                                                        </p>
-                                                        <p>
-                                                            <span className="font-semibold">Joining Date:</span> {emp.joiningDate}
-                                                        </p>
-                                                        <p>
-                                                            <span className="font-semibold">Address:</span> {emp.address}
-                                                        </p>
-                                                        <p>
-                                                            <span className="font-semibold">Contact No:</span> {emp.contactNo}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </CardContent>
+  return (
+   
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="animate-fade-in">
+          <h1 className="text-2xl font-bold text-foreground">Employee Registrations</h1>
+          <p className="text-muted-foreground">Review and approve employee registrations</p>
+        </div>
 
-                                            <CardFooter className="gap-3 flex justify-center pb-5">
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button>Approve</Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Do you want to approve {emp.firstName} {emp.lastName}?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                After approval this employee will be able to login and apply for leave. This cannot be undone!
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => handleApprove(emp.id)}>Continue</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button variant="destructive">Reject</Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Do you want to reject {emp.firstName} {emp.lastName}?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                This employee will be rejected and deleted. It cannot be undone.
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => handleReject(emp.id)} className="bg-red-500">Continue</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            </CardFooter>
-                                        </Card>
-                                    )
-                                }
-                            </TabsContent>
-                            <TabsContent value="approved">
-                                {approvedEmployee.length === 0 &&
-                                    <p className="mx-10 text-gray-500">No approved employees yet</p>
-                                }
-                                {approvedEmployee.length !== 0 &&
-                                    approvedEmployee.map((emp) =>
-                                        <Card
-                                            className="mx-10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden"
-                                            key={emp.id}
-                                        >
-                                            <CardHeader className="flex flex-col items-center text-center pb-2">
-                                                {/* Profile Image */}
-                                                <img
-                                                    src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
-                                                    alt="Employee"
-                                                    className="w-28 h-28 rounded-full object-cover shadow-md border"
-                                                />
-
-                                                <CardTitle className="text-2xl mt-4 font-bold">
-                                                    {emp.firstName} {emp.lastName}
-                                                </CardTitle>
-                                                <p className="text-sm text-gray-500">{emp.email}</p>
-                                            </CardHeader>
-
-                                            <CardContent className="px-6">
-                                                <div className="mt-4">
-                                                    <div className="text-xl font-semibold mb-3 border-b pb-1">
-                                                        Employee Information
-                                                    </div>
-
-                                                    <div className="space-y-2 text-gray-700">
-                                                        <p>
-                                                            <span className="font-semibold">Employee ID:</span> {emp.orgEmpId}
-                                                        </p>
-                                                        <p>
-                                                            <span className="font-semibold">Joining Date:</span> {emp.joiningDate}
-                                                        </p>
-                                                        <p>
-                                                            <span className="font-semibold">Address:</span> {emp.address}
-                                                        </p>
-                                                        <p>
-                                                            <span className="font-semibold">Contact No:</span> {emp.contactNo}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </CardContent>
-
-                                            <CardFooter className="gap-3 flex justify-center pb-5">
-                                                {/* <Button
-                                                    variant="destructive"
-                                                    className="px-6 py-2 rounded-full shadow-md"
-                                                >
-                                                    Delete
-                                                </Button> */}
-                                            </CardFooter>
-                                        </Card>
-                                    )
-                                }
-                            </TabsContent>
-                        </>
-                    }
-                </Tabs>
+        {/* Filters */}
+        <Card className="shadow-card animate-fade-in" style={{ animationDelay: "50ms" }}>
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search by name, email, or department..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-        </>
-    )
-}
+          </CardContent>
+        </Card>
+
+        {/* Table */}
+        <Card className="shadow-card animate-fade-in" style={{ animationDelay: "100ms" }}>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-semibold">
+              Registrations ({filteredRegistrations.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Employee</TableHead>
+                  <TableHead>Department</TableHead>
+                  <TableHead>Position</TableHead>
+                  <TableHead>Join Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredRegistrations.map((reg) => (
+                  <TableRow key={reg.id}>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium">{reg.name}</p>
+                        <p className="text-xs text-muted-foreground">{reg.email}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell>{reg.department}</TableCell>
+                    <TableCell>{reg.position}</TableCell>
+                    <TableCell>{reg.joinDate}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={statusStyles[reg.status]}>
+                        {reg.status.charAt(0).toUpperCase() + reg.status.slice(1)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleView(reg)}
+                          className="h-8 w-8"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        {reg.status === "pending" && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleApprove(reg.id)}
+                              className="h-8 w-8 text-success hover:text-success hover:bg-success/10"
+                            >
+                              <Check className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleReject(reg.id)}
+                              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* View Dialog */}
+        <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Registration Details</DialogTitle>
+              <DialogDescription>
+                Review the employee registration information
+              </DialogDescription>
+            </DialogHeader>
+            {selectedRegistration && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Full Name</p>
+                    <p className="font-medium">{selectedRegistration.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Email</p>
+                    <p className="font-medium">{selectedRegistration.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Department</p>
+                    <p className="font-medium">{selectedRegistration.department}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Position</p>
+                    <p className="font-medium">{selectedRegistration.position}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Join Date</p>
+                    <p className="font-medium">{selectedRegistration.joinDate}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Submitted At</p>
+                    <p className="font-medium">{selectedRegistration.submittedAt}</p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Status</p>
+                  <Badge variant="outline" className={statusStyles[selectedRegistration.status]}>
+                    {selectedRegistration.status.charAt(0).toUpperCase() +
+                      selectedRegistration.status.slice(1)}
+                  </Badge>
+                </div>
+              </div>
+            )}
+            <DialogFooter>
+              {selectedRegistration?.status === "pending" && (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleReject(selectedRegistration.id)}
+                    className="text-destructive"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Reject
+                  </Button>
+                  <Button onClick={() => handleApprove(selectedRegistration.id)}>
+                    <Check className="h-4 w-4 mr-2" />
+                    Approve
+                  </Button>
+                </>
+              )}
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    
+  );
+};
+
+export default ViewRegistrations;
