@@ -3,6 +3,7 @@ import { Check, X, Eye, Search, Filter } from "lucide-react";
 import { api } from "../../api/api";
 import { toast } from "sonner";
 import { Oval } from "react-loader-spinner";
+import { type Registration } from "../../lib/types";
 
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
@@ -32,19 +33,6 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { AxiosError } from "axios";
-
-type Registration = {
-  id: string;
-  orgEmpId: string;
-  name: string;
-  email: string;
-  contactNo: string;
-  address: string;
-  position: string;
-  joinDate: string;
-  status: "pending" | "approved";
-  submittedAt: string;
-}
 
 const statusStyles = {
   pending: "bg-red-400/10 text-red-600 border-red-400",
