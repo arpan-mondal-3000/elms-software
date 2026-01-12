@@ -196,7 +196,6 @@ const LeaveRequests = () => {
   }, [])
 
   return (
-
     <div className="space-y-6 m-10">
       {/* Header */}
       <div className="animate-fade-in">
