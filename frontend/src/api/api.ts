@@ -33,7 +33,7 @@ api.interceptors.response.use(
                 isRefreshing = true;
                 try {
                     console.log("Trying to refresh access token...")
-                    await fetch("/auth/refresh", { method: "GET", credentials: "include" }); // refresh accessToken with refreshToken
+                    await fetch(import.meta.env.VITE_API_URL + "/auth/refresh", { method: "GET", credentials: "include" }); // refresh accessToken with refreshToken
                     isRefreshing = false;
                     onRefreshed();
                 } catch (err) {
