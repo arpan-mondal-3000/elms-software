@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { type LeaveRequest, type CancelledRequests } from "../../lib/types";
 
 import { Check, X, Eye, Search, Filter, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -34,35 +35,6 @@ import {
 } from "../../components/ui/select";
 import { api } from "../../api/api";
 import { Oval } from "react-loader-spinner";
-
-type LeaveRequest = {
-  id: string;
-  orgEmpId: string;
-  employeeName: string;
-  employeeEmail: string;
-  leaveType: string;
-  startDate: string;
-  endDate: string;
-  days: number;
-  reason: string;
-  status: "pending" | "approved" | "rejected" | "canceled";
-  approvalComments?: string;
-  approvalDate?: string;
-  submittedAt: string;
-}
-
-type CancelledRequests = {
-  id: string;
-  orgEmpId: string;
-  employeeName: string;
-  employeeEmail: string;
-  leaveType: string;
-  startDate: string;
-  endDate: string;
-  days: number;
-  cancellationReason: string;
-  submittedAt: string;
-}
 
 const statusStyles = {
   pending: "bg-warning/10 text-warning border-warning/20",
