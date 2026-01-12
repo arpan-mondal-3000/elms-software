@@ -144,10 +144,10 @@ const LeaveRequests = () => {
 
   return (
     
-      <div className="space-y-6">
+      <div className="space-y-6 mx-10 mt-6 mb-6">
         {/* Header */}
         <div className="animate-fade-in">
-          <h1 className="text-2xl font-bold text-foreground">Leave Requests</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-3">Leave Requests</h1>
           <p className="text-muted-foreground">Manage employee leave and cancellation requests</p>
         </div>
 
@@ -187,7 +187,7 @@ const LeaveRequests = () => {
               Leave Requests ({filteredLeaveRequests.length})
             </TabsTrigger>
             <TabsTrigger value="cancellations" className="flex items-center gap-2">
-              Cancellation Requests ({filteredCancellations.length})
+              Cancelled Requests ({filteredCancellations.length})
               {filteredCancellations.filter((c) => c.status === "pending").length > 0 && (
                 <Badge variant="destructive" className="h-5 w-5 p-0 flex items-center justify-center text-xs">
                   {filteredCancellations.filter((c) => c.status === "pending").length}
@@ -286,7 +286,7 @@ const LeaveRequests = () => {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5 text-warning" />
-                  Cancellation Requests
+                  Cancelled Requests
                 </CardTitle>
               </CardHeader>
               <CardContent>

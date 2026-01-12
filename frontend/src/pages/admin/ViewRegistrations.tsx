@@ -91,10 +91,10 @@ const ViewRegistrations = () => {
 
   return (
    
-      <div className="space-y-6">
+      <div className="space-y-6 mx-10 mt-6 mb-6">
         {/* Header */}
         <div className="animate-fade-in">
-          <h1 className="text-2xl font-bold text-foreground">Employee Registrations</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-4">Employee Registrations</h1>
           <p className="text-muted-foreground">Review and approve employee registrations</p>
         </div>
 

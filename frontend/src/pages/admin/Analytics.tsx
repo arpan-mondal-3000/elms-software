@@ -32,10 +32,10 @@ const monthlyLeaveData = [
 ];
 
 const leaveTypeData = [
-  { name: "Annual Leave", value: 145, color: "hsl(var(--primary))" },
-  { name: "Sick Leave", value: 78, color: "hsl(var(--info))" },
-  { name: "Personal Leave", value: 45, color: "hsl(var(--warning))" },
-  { name: "Other", value: 22, color: "hsl(var(--muted-foreground))" },
+  { name: "Annual Leave", value: 145, color: "#6366f1"},
+  { name: "Sick Leave", value: 78, color: " #06402B"},
+  { name: "Personal Leave", value: 45, color:  "#BE5103" },
+  { name: "Other", value: 22, color: "#64748b" },
 ];
 
 const departmentData = [
@@ -68,10 +68,10 @@ const Analytics = () => {
 
   return (
     
-      <div className="space-y-6">
+      <div className="space-y-6 mx-10 mt-6 mb-6">
         {/* Header */}
         <div className="animate-fade-in">
-          <h1 className="text-2xl font-bold text-foreground">Analytics Dashboard</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-3">Analytics Dashboard</h1>
           <p className="text-muted-foreground">Insights and trends for leave management</p>
         </div>
 
@@ -165,23 +165,23 @@ const Analytics = () => {
                     <XAxis dataKey="month" className="text-muted-foreground" />
                     <YAxis className="text-muted-foreground" />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="approved" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="rejected" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="pending" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="approved" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="rejected" fill="#ef4444"  radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="pending" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartContainer>
               <div className="flex items-center justify-center gap-6 mt-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-success" />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: "#22c55e" }} />
                   <span className="text-sm text-muted-foreground">Approved</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-destructive" />
+                  <div className="h-3 w-3 rounded-full bg-destructive" style={{ backgroundColor: "#f59e0b" }}/>
                   <span className="text-sm text-muted-foreground">Rejected</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-warning" />
+                  <div className="h-3 w-3 rounded-full bg-warning"  style={{ backgroundColor: "#ef4444" }}  />
                   <span className="text-sm text-muted-foreground">Pending</span>
                 </div>
               </div>
@@ -252,14 +252,14 @@ const Analytics = () => {
                     <Line
                       type="monotone"
                       dataKey="thisYear"
-                      stroke="hsl(var(--primary))"
+                      stroke="#6366f1"
                       strokeWidth={2}
                       dot={{ fill: "hsl(var(--primary))" }}
                     />
                     <Line
                       type="monotone"
                       dataKey="lastYear"
-                      stroke="hsl(var(--muted-foreground))"
+                      stroke="#38bdf8"
                       strokeWidth={2}
                       strokeDasharray="5 5"
                       dot={{ fill: "hsl(var(--muted-foreground))" }}
