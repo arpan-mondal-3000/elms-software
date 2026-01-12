@@ -61,6 +61,51 @@ export const getAllEmployeeLeaves = async (req, res) => {
   }
 };
 
+export const getAllLeaveTypes = async (req, res) => {
+    try {
+        const leaveTypesData = await db.select().from(leaveTypes);
+        return res.status(200).json({ success: true, data: leaveTypesData });
+    } catch (err) {
+        console.error("Failed to fetch leave types: ", err);
+        return res.status(500).json({ success: false, message: "Failed to fetch leave types!" });
+    }
+}
+
+export const getLeaveBalance = async (req, res) => {
+    try {
+        const { id: employeeId } = req.user;
+        const { leaveType } = req.params;
+
+
+        // Get the required leave balance
+        const [leaveBalance] = await db.select()
+            .from(leaveBalances)
+            .where(and(eq(leaveBalances.employeeId, employeeId), eq(leaveBalances.leaveType, leaveType)))
+            .limit(1);
+
+        if (!leaveBalance) {
+            // fetch the leave type
+            const [leaveTypeData] = await db.select().from(leaveTypes).where(eq(leaveTypes.id, leaveType));
+
+            // create a leave balance for the leave type
+            const [newLeaveBalance] = await db.insert(leaveBalances)
+                .values({
+                    employeeId,
+                    leaveType,
+                    usedDays: 0,
+                    remainingDays: leaveTypeData.maxDaysPerYear
+                }).returning();
+            return res.status(200).json({ success: true, data: newLeaveBalance });
+        }
+
+        return res.status(200).json({ success: true, data: leaveBalance });
+
+    } catch (err) {
+        console.error("Failed to fetch leave balance: ", err);
+        return res.status(500).json({ success: false, message: "Failed to fetch leave balance!" });
+    }
+}
+
 export const createLeaveRequest = async (req, res) => {
   try {
     const { id: employeeId } = req.user;

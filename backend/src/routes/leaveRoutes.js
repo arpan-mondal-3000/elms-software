@@ -4,6 +4,8 @@ import { protectRoute } from "../middlewares/protectRoute.js";
 import {
     getAllAdminLeaves,
     getAllEmployeeLeaves,
+    getAllLeaveTypes,
+    getLeaveBalance,
     createLeaveRequest,
     updateLeaveRequest,
     cancelLeaveRequest,
@@ -15,7 +17,8 @@ const leaveRouter = express.Router();
 
 leaveRouter.get("/admin", auth, protectRoute(["admin"]), getAllAdminLeaves);
 leaveRouter.get("/employee", auth, protectRoute(["employee"]), getAllEmployeeLeaves);
-
+leaveRouter.get("/leave-types", auth, getAllLeaveTypes);
+leaveRouter.get("/leave-balance/:leaveType", auth, protectRoute(["employee"]), getLeaveBalance);
 leaveRouter.post("/", auth, protectRoute(["employee"]), createLeaveRequest);
 leaveRouter.put("/:leaveId", auth, protectRoute(["employee"]), updateLeaveRequest);
 leaveRouter.post("/status/:leaveId", auth, protectRoute(["admin"]), setLeaveStatus);
