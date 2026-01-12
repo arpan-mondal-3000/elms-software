@@ -11,11 +11,13 @@ export const getAllEmployees = async (req, res) => {
             orgEmpId: users.orgEmpId,
             firstName: users.firstName,
             lastName: users.lastName,
+            // position: employees.position,
             email: users.email,
             contactNo: users.contactNo,
             address: users.address,
-            joiningDate: users.joiningDate,
+            joinDate: users.joiningDate,
             isApproved: employees.isApproved,
+            submittedAt: users.createdAt
         })
             .from(users)
             .leftJoin(employees, eq(employees.employeeId, users.id))

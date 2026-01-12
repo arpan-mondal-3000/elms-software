@@ -1,12 +1,29 @@
 import { db } from "../db/db.js";
-import { leaveRequests, employees, leaveBalances, leaveTypes } from "../db/schema/schema.js";
+import { users, leaveRequests, employees, leaveBalances, leaveTypes } from "../db/schema/schema.js";
 import { and, eq } from "drizzle-orm";
 
 export const getAllAdminLeaves = async (req, res) => {
     try {
         const { id: adminId } = req.user;
-        const leaves = await db.select()
+        const leaves = await db.select({
+            id: leaveRequests.id,
+            orgEmpId: users.orgEmpId,
+            firstName: users.firstName,
+            lastName: users.lastName,
+            employeeEmail: users.email,
+            leaveType: leaveTypes.name,
+            startDate: leaveRequests.startDate,
+            endDate: leaveRequests.endDate,
+            days: leaveRequests.totalDays,
+            reason: leaveRequests.reason,
+            status: leaveRequests.status,
+            approvalComment: leaveRequests.approverComment,
+            approvalDate: leaveRequests.approvalDate,
+            submittedAt: leaveRequests.updatedAt,
+        })
             .from(leaveRequests)
+            .innerJoin(users, eq(leaveRequests.employeeId, users.id))
+            .innerJoin(leaveTypes, eq(leaveRequests.leaveType, leaveTypes.id))
             .where(eq(leaveRequests.approverId, adminId));
 
         res.status(200).json({ success: true, data: leaves });
@@ -261,7 +278,7 @@ export const setLeaveStatus = async (req, res) => {
         // Check if it can be approved or rejected
         const startOfLeave = new Date(leaveRequest.startDate);
         const currentDate = new Date();
-        if (startOfLeave >= currentDate) {
+        if (startOfLeave <= currentDate) {
             console.error("Leave period has already started!");
             return res.status(406).json({ success: false, message: "Leave period has already started!" });
         }
@@ -279,11 +296,9 @@ export const setLeaveStatus = async (req, res) => {
             // Update leave request
             const [updatedLeaveRequest] = await db.update(leaveRequests).set({
                 status: "approved",
-                approverComment,
                 approvalDate: new Date(),
                 updatedAt: new Date()
-            }).where(eq(leaveRequests.id, leaveId));
-
+            }).where(eq(leaveRequests.id, leaveId)).returning();
             return res.status(200).json({ success: true, data: updatedLeaveRequest });
         } else if (status === "rejected") {
             const [updatedLeaveRequest] = await db.update(leaveRequests).set({
@@ -291,7 +306,7 @@ export const setLeaveStatus = async (req, res) => {
                 approverComment,
                 approvalDate: new Date(),
                 updatedAt: new Date()
-            }).where(eq(leaveRequests.id, leaveId));
+            }).where(eq(leaveRequests.id, leaveId)).returning();
 
             return res.status(200).json({ success: true, data: updatedLeaveRequest });
         } else {
