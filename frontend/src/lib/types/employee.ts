@@ -16,3 +16,15 @@ export type LeaveType = {
     description: string;
     maxDaysPerYear: number;
 }
+
+export type EmployeeLeaveDetails = {
+    id: number;
+    type: string;
+    from: string;
+    to: string;
+    days: number;
+    reason: string;
+    status: string;
+    approvalComment?: string;
+    approvalDate?: string;
+}
