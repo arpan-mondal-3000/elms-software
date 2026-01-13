@@ -33,6 +33,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../../components/ui/alert-dialog"
 import { api } from "../../api/api";
 import { Oval } from "react-loader-spinner";
 
@@ -282,14 +293,27 @@ const LeaveRequests = () => {
                             </Button>
                             {req.status === "pending" && (
                               <>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleApprove(req.id)}
-                                  className="h-8 w-8 text-success hover:text-success hover:bg-success/10"
-                                >
-                                  <Check className="h-4 w-4" />
-                                </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost"
+                                      size="icon"
+                                      className="h-8 w-8 text-success hover:text-success hover:bg-success/10">
+                                      <Check className="h-4 w-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Do you want to approve the leave request?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction className="bg-black" onClick={() => handleApprove(req.id)}>Continue</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
                                 <Button
                                   variant="ghost"
                                   size="icon"

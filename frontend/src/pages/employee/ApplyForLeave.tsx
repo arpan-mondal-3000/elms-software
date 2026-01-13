@@ -56,10 +56,12 @@ export default function ApplyForLeaveForm() {
     control: form.control,
     name: "leaveType",
   });
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (values: LeaveFormValues) => {
     try {
-      // 1. Find selected leave type object
+      setLoading(true);
+      // Find selected leave type object
       const leaveTypeObj = leaveTypes.find(
         (lt) => lt.name === values.leaveType
       );
@@ -71,7 +73,7 @@ export default function ApplyForLeaveForm() {
 
       const leaveTypeId = leaveTypeObj.id;
 
-      // 2. Date validation
+      // Date validation
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -88,12 +90,12 @@ export default function ApplyForLeaveForm() {
         return;
       }
 
-      // 3. Calculate total leave days (inclusive)
+      // Calculate total leave days (inclusive)
       const oneDay = 1000 * 60 * 60 * 24;
       const totalDays =
         Math.floor((endDate.getTime() - startDate.getTime()) / oneDay) + 1;
 
-      // 4. Check remaining leave balance
+      // Check remaining leave balance
       const remainingDays =
         leaveBalanceDetails.total - leaveBalanceDetails.used;
 
@@ -104,7 +106,7 @@ export default function ApplyForLeaveForm() {
         return;
       }
 
-      // 5. POST request
+      // POST request
       await api.post("/leave/", {
         leaveType: leaveTypeId,
         startDate: values.fromDate,
@@ -122,6 +124,8 @@ export default function ApplyForLeaveForm() {
       } else {
         toast.error("Unexpected error occurred");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -179,107 +183,123 @@ export default function ApplyForLeaveForm() {
         <h2 className="text-2xl font-semibold text-center mb-6">Apply for Leave</h2>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-            <FormField
-              control={form.control}
-              name="leaveType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Select leave Type</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select leave type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {leaveTypes.map((lt: LeaveType) => (
-                          <SelectItem value={lt.name} key={lt.id}>
-                            {lt.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          {
+            loading ?
+              <div className="flex items-center justify-center">
+                <Oval
+                  visible={true}
+                  height="80"
+                  width="80"
+                  color="#000814"
+                  secondaryColor="#bad6ff"
+                  ariaLabel="oval-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                />
+              </div>
+              :
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                <FormField
+                  control={form.control}
+                  name="leaveType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Select leave Type</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select leave type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {leaveTypes.map((lt: LeaveType) => (
+                              <SelectItem value={lt.name} key={lt.id}>
+                                {lt.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {
-              leaveDetailsLoading ?
-                <div className="flex items-center justify-center">
-                  <Oval
-                    visible={true}
-                    height="80"
-                    width="80"
-                    color="#000814"
-                    secondaryColor="#bad6ff"
-                    ariaLabel="oval-loading"
-                    wrapperStyle={{}}
-                    wrapperClass=""
+                {
+                  leaveDetailsLoading ?
+                    <div className="flex items-center justify-center">
+                      <Oval
+                        visible={true}
+                        height="80"
+                        width="80"
+                        color="#000814"
+                        secondaryColor="#bad6ff"
+                        ariaLabel="oval-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                      />
+                    </div>
+                    :
+                    <>
+                      {
+                        selectedLeaveType &&
+                        <div className="text-sm text-muted-foreground border p-2 rounded-lg">
+                          <strong>Description:</strong> {leaveTypes.filter((l: LeaveType) => l.name === selectedLeaveType)[0].description}
+                        </div>
+                      }
+
+                      {
+                        selectedLeaveType && leaveBalanceDetails.title.trim() !== "" &&
+                        <LeaveCard detail={leaveBalanceDetails} />
+                      }
+                    </>
+                }
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="fromDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>From Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="toDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>To Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
-                :
-                <>
-                  {
-                    selectedLeaveType &&
-                    <div className="text-sm text-muted-foreground border p-2 rounded-lg">
-                      <strong>Description:</strong> {leaveTypes.filter((l: LeaveType) => l.name === selectedLeaveType)[0].description}
-                    </div>
-                  }
 
-                  {
-                    selectedLeaveType && leaveBalanceDetails.title.trim() !== "" &&
-                    <LeaveCard detail={leaveBalanceDetails} />
-                  }
-                </>
-            }
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="fromDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>From Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="reason"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reason for Leave</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Enter reason for your leave..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="toDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>To Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="reason"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Reason for Leave</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Enter reason for your leave..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" className="w-full">Submit Application</Button>
-          </form>
+                <Button type="submit" className="w-full">Submit Application</Button>
+              </form>
+          }
         </Form>
       </div>
     </div>
