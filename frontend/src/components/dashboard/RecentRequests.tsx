@@ -1,58 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { cn } from "../../lib/utils";
+import type { RecentLeaveRequest } from "../../lib/types";
 
-interface LeaveRequest {
-  id: string;
-  type: string;
-  startDate: string;
-  endDate: string;
-  status: "pending" | "approved" | "rejected";
-  days: number;
-}
+type LeaveStatus = "pending" | "approved" | "rejected" | "expired";
 
-const recentRequests: LeaveRequest[] = [
-  {
-    id: "1",
-    type: "Annual Leave",
-    startDate: "Jan 15, 2025",
-    endDate: "Jan 17, 2025",
-    status: "approved",
-    days: 3,
-  },
-  {
-    id: "2",
-    type: "Sick Leave",
-    startDate: "Jan 10, 2025",
-    endDate: "Jan 10, 2025",
-    status: "approved",
-    days: 1,
-  },
-  {
-    id: "3",
-    type: "Personal Leave",
-    startDate: "Feb 01, 2025",
-    endDate: "Feb 02, 2025",
-    status: "pending",
-    days: 2,
-  },
-  {
-    id: "4",
-    type: "Annual Leave",
-    startDate: "Dec 20, 2024",
-    endDate: "Dec 20, 2024",
-    status: "rejected",
-    days: 1,
-  },
-];
-
-const statusStyles = {
+const statusStyles: Record<LeaveStatus, string> = {
   pending: "bg-warning/15 text-warning border-warning/30",
   approved: "bg-primary/10 text-primary border-primary/10",
   rejected: "bg-destructive/20 text-destructive border-destructive/10",
+  expired: "bg-muted/20 text-muted-foreground border-muted/30",
 };
 
-const RecentRequests = () => {
+const RecentRequests = ({ recentRequests }: { recentRequests: RecentLeaveRequest[] }) => {
   return (
     <Card className="shadow-card">
       <CardHeader className="pb-3">
@@ -73,7 +33,10 @@ const RecentRequests = () => {
               </div>
               <Badge
                 variant="outline"
-                className={cn("capitalize", statusStyles[request.status])}
+                className={cn(
+                  "capitalize",
+                  statusStyles[request.status as LeaveStatus]
+                )}
               >
                 {request.status}
               </Badge>

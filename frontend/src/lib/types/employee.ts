@@ -28,3 +28,12 @@ export type EmployeeLeaveDetails = {
     approvalComment?: string;
     approvalDate?: string;
 }
+
+export interface RecentLeaveRequest {
+    id: number;
+    type: string;
+    startDate: string;
+    endDate: string;
+    status: string;
+    days: number;
+}

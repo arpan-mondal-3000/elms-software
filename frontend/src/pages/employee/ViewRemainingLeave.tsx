@@ -4,7 +4,7 @@ import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { Calendar, Plus } from "lucide-react";
 import { useNavigate } from "react-router";
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface LeaveSummary {
   label: string;
@@ -19,64 +19,64 @@ export interface LeaveDetail {
 }
 import LeaveCard from "../../components/LeaveCard";
 
-// const SUMMARY: LeaveSummary[] = [
-//   { label: "Annual Leave", daysLeft: 15 },
-//   { label: "Sick Leave", daysLeft: 8 },
-//   { label: "Personal Leave", daysLeft: 2 },
-//   { label: "Carry-over", daysLeft: 0 },
-// ];
+const SUMMARY: LeaveSummary[] = [
+  { label: "Annual Leave", daysLeft: 15 },
+  { label: "Sick Leave", daysLeft: 8 },
+  { label: "Personal Leave", daysLeft: 2 },
+  { label: "Carry-over", daysLeft: 0 },
+];
 
-// const DETAILS: LeaveDetail[] = [
-//   { title: "Annual Leave", total: 20, used: 5, tone: "blue" },
-//   { title: "Sick Leave", total: 10, used: 2, tone: "teal" },
-//   { title: "Personal Leave", total: 3, used: 1, tone: "amber" },
-// ];
+const DETAILS: LeaveDetail[] = [
+  { title: "Annual Leave", total: 20, used: 5, tone: "blue" },
+  { title: "Sick Leave", total: 10, used: 2, tone: "teal" },
+  { title: "Personal Leave", total: 3, used: 1, tone: "amber" },
+];
 
 export default function ViewRemainingLeaveShadcn(): JSX.Element {
 
-  const navigate =useNavigate();
+  const navigate = useNavigate();
 
-  const [summary, setSummary] = useState<LeaveSummary[]>([]);
-  const [details, setDetails] = useState<LeaveDetail[]>([]);
-  useEffect(() => {
-  const fetchOverview = async () => {
-    const res = await fetch("/api/employee/leaves/overview", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+  const [summary, setSummary] = useState<LeaveSummary[]>(SUMMARY);
+  const [details, setDetails] = useState<LeaveDetail[]>(DETAILS);
+  // useEffect(() => {
+  //   const fetchOverview = async () => {
+  //     const res = await fetch("/api/employee/leaves/overview", {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
 
-    const json = await res.json();
-    if (!json.success) return;
+  //     const json = await res.json();
+  //     if (!json.success) return;
 
-    const data = json.data;
+  //     const data = json.data;
 
-    // SUMMARY
-    setSummary(
-      data.map((d: any) => ({
-        label: d.title,
-        daysLeft: d.remaining,
-      }))
-    );
+  //     // SUMMARY
+  //     setSummary(
+  //       data.map((d: any) => ({
+  //         label: d.title,
+  //         daysLeft: d.remaining,
+  //       }))
+  //     );
 
-    // DETAILS
-    setDetails(
-      data.map((d: any) => ({
-        title: d.title,
-        total: d.total,
-        used: d.used,
-        tone:
-          d.title === "Sick Leave"
-            ? "teal"
-            : d.title === "Personal Leave"
-            ? "amber"
-            : "blue",
-      }))
-    );
-  };
+  //     // DETAILS
+  //     setDetails(
+  //       data.map((d: any) => ({
+  //         title: d.title,
+  //         total: d.total,
+  //         used: d.used,
+  //         tone:
+  //           d.title === "Sick Leave"
+  //             ? "teal"
+  //             : d.title === "Personal Leave"
+  //               ? "amber"
+  //               : "blue",
+  //       }))
+  //     );
+  //   };
 
-  fetchOverview();
-}, []);
+  //   fetchOverview();
+  // }, []);
   return (
 
     <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark font-display">
@@ -93,7 +93,7 @@ export default function ViewRemainingLeaveShadcn(): JSX.Element {
               View full history
             </Button>
 
-            <Button onClick = { ()=> navigate("/employee/apply-for-leave")}>
+            <Button onClick={() => navigate("/employee/apply-for-leave")}>
               <Plus className="" size={14} />Request Leave
             </Button>
           </div>
