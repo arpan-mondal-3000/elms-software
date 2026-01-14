@@ -22,6 +22,20 @@
       "when": 1762984727697,
       "tag": "0002_huge_azazel",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1768355349944,
+      "tag": "0003_yummy_galactus",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1768360900525,
+      "tag": "0004_abnormal_green_goblin",
+      "breakpoints": true
     }
   ]
 }

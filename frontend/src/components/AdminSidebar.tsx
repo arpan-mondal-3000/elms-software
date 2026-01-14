@@ -53,7 +53,7 @@ const items = [
 ]
 
 export function AdminSidebar() {
-    const { logout } = useAuthStore();
+    const { user, logout } = useAuthStore();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -104,7 +104,7 @@ export function AdminSidebar() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton>
-                                    <User2 /> Hello Admin
+                                    <User2 /> Hello {user?.firstName}
                                     <ChevronUp className="ml-auto" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
@@ -112,9 +112,6 @@ export function AdminSidebar() {
                                 side="top"
                                 className="w-[--radix-popper-anchor-width]"
                             >
-                                <DropdownMenuItem>
-                                    <span>My Account</span>
-                                </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Button variant="destructive" className="w-full" onClick={handleLogout}>Sign out</Button>
                                 </DropdownMenuItem>

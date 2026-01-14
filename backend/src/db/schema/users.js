@@ -12,6 +12,7 @@ import { organizations, departments } from "./organization.js";
 
 // Enums
 export const roles = pgEnum("role", ["admin", "employee"]);
+export const genders = pgEnum("genders", ["male", "female"]);
 
 // Tables
 export const users = pgTable("users", {
@@ -46,6 +47,8 @@ export const employees = pgTable("employees", {
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
   isApproved: boolean("is_approved").notNull().default(false),
+  gender: genders("gender").notNull(),
+  position: text("position").notNull(),
   adminId: integer("admin_id")
     .notNull()
     .references(() => admins.adminId),

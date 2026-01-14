@@ -29,10 +29,12 @@ export type EmployeeData = {
     orgEmpId: string;
     firstName: string;
     lastName: string;
+    gender: string;
     password: string;
     contactNo: string;
     organizationId: number | null | undefined;
     departmentId: number | null | undefined;
+    position: string;
     address: string;
     joiningDate: Date;
 }

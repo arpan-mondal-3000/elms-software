@@ -11,7 +11,7 @@ export default function EmployeeDashboard() {
         <SidebarProvider>
             <EmployeeSidebar />
             <main className="w-full">
-                <div className="bg-gray-100">
+                <div className="bg-background-light">
                     <SidebarTrigger />
                 </div>
                 <Outlet />

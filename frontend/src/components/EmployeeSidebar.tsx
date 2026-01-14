@@ -52,7 +52,7 @@ const items = [
 ]
 
 export function EmployeeSidebar() {
-    const { logout } = useAuthStore();
+    const { user, logout } = useAuthStore();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -97,7 +97,7 @@ export function EmployeeSidebar() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton>
-                                    <User2 /> Hello Employee
+                                    <User2 /> Hello {user?.firstName}
                                     <ChevronUp className="ml-auto" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
@@ -105,9 +105,6 @@ export function EmployeeSidebar() {
                                 side="top"
                                 className="w-[--radix-popper-anchor-width]"
                             >
-                                <DropdownMenuItem>
-                                    <span>My Account</span>
-                                </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Button variant="destructive" className="w-full" onClick={handleLogout}>Sign out</Button>
                                 </DropdownMenuItem>

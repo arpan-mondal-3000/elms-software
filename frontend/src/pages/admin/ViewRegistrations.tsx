@@ -32,6 +32,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../../components/ui/alert-dialog";
 import { AxiosError } from "axios";
 
 const statusStyles = {
@@ -108,11 +119,12 @@ const ViewRegistrations = () => {
           email: reg.email,
           contactNo: reg.contactNo,
           address: reg.address,
-          position: "Employee",
+          position: reg.position,
           joinDate: reg.joinDate,
           status: reg.isApproved ? "approved" : "pending",
           submittedAt: (new Date(reg.submittedAt)).toDateString()
         }))
+        adjustedData.sort((a, b) => a.joinDate < b.joinDate ? 1 : -1)
         setRegistrations(adjustedData);
       } catch (err) {
         toast.error("Failed to fetch employee registration details!");
@@ -221,22 +233,53 @@ const ViewRegistrations = () => {
                         </Button>
                         {reg.status === "pending" && (
                           <>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleApprove(reg.id)}
-                              className="h-8 w-8 text-success hover:text-success hover:bg-success/10"
-                            >
-                              <Check className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleReject(reg.id)}
-                              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-success hover:text-success hover:bg-success/10"
+                                >
+                                  <Check className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Do you want to approve the registration request?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction className="bg-black" onClick={() => handleApprove(reg.id)}>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Do you want to reject the registration request?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. The registration details will be deleted!
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction className="bg-red-500" onClick={() => handleReject(reg.id)}>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           </>
                         )}
                       </div>
@@ -305,18 +348,51 @@ const ViewRegistrations = () => {
           <DialogFooter>
             {selectedRegistration?.status === "pending" && (
               <>
-                <Button
-                  variant="outline"
-                  onClick={() => handleReject(selectedRegistration.id)}
-                  className="text-destructive"
-                >
-                  <X className="h-4 w-4 mr-2" />
-                  Reject
-                </Button>
-                <Button onClick={() => handleApprove(selectedRegistration.id)}>
-                  <Check className="h-4 w-4 mr-2" />
-                  Approve
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button>
+                      <Check className="h-4 w-4 mr-2" />
+                      Approve
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Do you want to approve the registration request?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction className="bg-black" onClick={() => handleApprove(selectedRegistration.id)}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+
+                    <Button
+                      variant="outline"
+                      className="text-destructive"
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Reject
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Do you want to reject the registration request?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. The registration details will be deleted!
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction className="bg-red-500" onClick={() => handleReject(selectedRegistration.id)}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </>
             )}
           </DialogFooter>

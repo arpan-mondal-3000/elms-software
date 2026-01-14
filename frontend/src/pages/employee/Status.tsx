@@ -377,7 +377,7 @@ export default function Status() {
 
   if (isUpdating) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="flex justify-center items-center min-h-screen bg-background-light">
         <div className="bg-white rounded-2xl shadow-lg w-full max-w-2xl p-8 mx-4">
           <Button onClick={() => setIsUpdating(false)}><ArrowLeft /></Button>
           <h2 className="text-2xl font-semibold text-center mb-6">Update Leave Request</h2>
@@ -507,7 +507,7 @@ export default function Status() {
   }
 
   return (
-    <div className="flex justify-center items-start min-h-screen bg-gray-100 p-6 ">
+    <div className="flex justify-center items-start min-h-screen bg-background-light p-6 ">
       <Card className="w-full max-w-5xl">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-semibold">

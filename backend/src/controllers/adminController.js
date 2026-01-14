@@ -11,7 +11,7 @@ export const getAllEmployees = async (req, res) => {
             orgEmpId: users.orgEmpId,
             firstName: users.firstName,
             lastName: users.lastName,
-            // position: employees.position,
+            position: employees.position,
             email: users.email,
             contactNo: users.contactNo,
             address: users.address,

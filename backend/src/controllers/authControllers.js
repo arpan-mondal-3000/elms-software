@@ -26,11 +26,13 @@ export const register = async (req, res) => {
     const {
       firstName,
       lastName,
+      gender,
       email,
       password,
       organizationId,
       departmentId,
       orgEmpId,
+      position,
       joiningDate,
       contactNo,
       address,
@@ -84,7 +86,9 @@ export const register = async (req, res) => {
     // Insert into employees table
     await db.insert(employees).values({
       employeeId: newUser.id,
-      adminId: admin.adminId
+      adminId: admin.adminId,
+      gender,
+      position
     });
 
     // Insert into userRecords table

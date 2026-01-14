@@ -490,10 +490,27 @@ const LeaveRequests = () => {
                   <X className="h-4 w-4 mr-2" />
                   Reject
                 </Button>
-                <Button onClick={() => handleApprove(selectedRequest.id)}>
-                  <Check className="h-4 w-4 mr-2" />
-                  Approve
-                </Button>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button>
+                      <Check className="h-4 w-4 mr-2" />
+                      Approve
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Do you want to approve the leave request?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction className="bg-black" onClick={() => handleApprove(selectedRequest.id)}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </>
             )}
           </DialogFooter>
