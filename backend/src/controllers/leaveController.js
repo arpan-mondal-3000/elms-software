@@ -74,7 +74,14 @@ export const getAllEmployeeLeaves = async (req, res) => {
 
 export const getAllLeaveTypes = async (req, res) => {
   try {
-    const leaveTypesData = await db.select().from(leaveTypes);
+    const { id: employeeId } = req.user;
+    // Get the employee details
+    const [emp] = await db.select().from(employees).where(eq(employees.employeeId, employeeId)).limit(1);
+    let leaveTypesData = await db.select().from(leaveTypes);
+    // Don't show maternity leave for males
+    if (emp && emp.gender === "male") {
+      leaveTypesData = leaveTypesData.filter((lt) => lt.id !== 4);
+    }
     return res.status(200).json({ success: true, data: leaveTypesData });
   } catch (err) {
     console.error("Failed to fetch leave types: ", err);

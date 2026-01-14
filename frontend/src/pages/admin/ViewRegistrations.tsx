@@ -119,11 +119,12 @@ const ViewRegistrations = () => {
           email: reg.email,
           contactNo: reg.contactNo,
           address: reg.address,
-          position: "Employee",
+          position: reg.position,
           joinDate: reg.joinDate,
           status: reg.isApproved ? "approved" : "pending",
           submittedAt: (new Date(reg.submittedAt)).toDateString()
         }))
+        adjustedData.sort((a, b) => a.joinDate < b.joinDate ? 1 : -1)
         setRegistrations(adjustedData);
       } catch (err) {
         toast.error("Failed to fetch employee registration details!");

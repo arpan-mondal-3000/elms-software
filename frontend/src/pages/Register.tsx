@@ -33,7 +33,17 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "../components/ui/command"
+} from "../components/ui/command";
+
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../components/ui/select";
+
 import {
     Popover,
     PopoverContent,
@@ -70,10 +80,12 @@ export default function Register() {
         orgEmpId: "",
         firstName: "",
         lastName: "",
+        gender: "",
         password: "",
         contactNo: "",
         organizationId: null,
         departmentId: null,
+        position: "",
         address: "",
         joiningDate: new Date(),
     });
@@ -124,7 +136,7 @@ export default function Register() {
                 </div>
                 {/* Login form */}
                 <div className="flex items-center justify-center bg-muted h-full">
-                    <form className="w-3/4 shadow-lg p-10 rounded-lg bg-background" onSubmit={handleRegister}>
+                    <form className="my-10 w-3/4 shadow-lg p-10 rounded-lg bg-background" onSubmit={handleRegister}>
                         {loading ?
                             <div className="flex items-center justify-center">
                                 <Oval
@@ -179,6 +191,20 @@ export default function Register() {
                                                 required
                                             />
                                         </Field>
+                                        <Field>
+                                            <FieldLabel>Gender</FieldLabel>
+                                            <Select onValueChange={(val) => setUserData((prev) => ({ ...prev, gender: val }))}>
+                                                <SelectTrigger className="w-45">
+                                                    <SelectValue placeholder="Select your gender" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectItem value="male">Male</SelectItem>
+                                                        <SelectItem value="female">Female</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                        </Field>
                                         <div className="flex gap-2 flex-wrap lg:flex-nowrap">
                                             <Field>
                                                 <FieldLabel>Organization</FieldLabel>
@@ -188,7 +214,7 @@ export default function Register() {
                                                             variant="outline"
                                                             role="combobox"
                                                             aria-expanded={openOrgBox}
-                                                            className="w-[200px] justify-between"
+                                                            className="w-50 justify-between"
                                                         >
                                                             {orgData && userData.organizationId
                                                                 ? orgData.find((org) => org.id === userData.organizationId)?.name
@@ -196,7 +222,7 @@ export default function Register() {
                                                             <ChevronsUpDown className="opacity-50" />
                                                         </Button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="w-[200px] p-0">
+                                                    <PopoverContent className="w-50 p-0">
                                                         <Command>
                                                             <CommandInput placeholder="Search Organizations..." className="h-9" />
                                                             <CommandList>
@@ -235,7 +261,7 @@ export default function Register() {
                                                             variant="outline"
                                                             role="combobox"
                                                             aria-expanded={openDeptBox}
-                                                            className="w-[200px] justify-between"
+                                                            className="w-50 justify-between"
                                                             disabled={userData.organizationId ? false : true}
                                                         >
                                                             {orgData && userData.organizationId && selectedOrg && userData.departmentId
@@ -244,7 +270,7 @@ export default function Register() {
                                                             <ChevronsUpDown className="opacity-50" />
                                                         </Button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="w-[200px] p-0">
+                                                    <PopoverContent className="w-50 p-0">
                                                         <Command>
                                                             <CommandInput placeholder="Search Departments..." className="h-9" />
                                                             <CommandList>
@@ -275,6 +301,14 @@ export default function Register() {
                                                 </Popover>
                                             </Field>
                                         </div>
+                                        <Field>
+                                            <FieldLabel>Position in department</FieldLabel>
+                                            <Input
+                                                value={userData.position}
+                                                onChange={(e) => setUserData((prev) => ({ ...prev, position: e.target.value }))}
+                                                required
+                                            />
+                                        </Field>
                                         <div className="flex gap-2 flex-wrap lg:flex-nowrap">
                                             <Field>
                                                 <FieldLabel>Employee ID</FieldLabel>

@@ -1,10 +1,10 @@
-import { roles, users, admins, employees, userRecords } from "./users.js"
+import { roles, genders, users, admins, employees, userRecords } from "./users.js"
 import { organizations, departments } from "./organization.js"
 import { statuses, leaveTypes, leaveBalances, leaveRequests } from "./leave.js";
 import { relations } from "drizzle-orm";
 
 export {
-    users, roles, admins, employees, userRecords,
+    users, genders, roles, admins, employees, userRecords,
     organizations, departments,
     statuses, leaveTypes, leaveBalances, leaveRequests
 };
