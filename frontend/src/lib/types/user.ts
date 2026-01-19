@@ -39,4 +39,4 @@ export type EmployeeData = {
     joiningDate: Date;
 }
 
-export type User = Employee | Admin | null;
+export type User = Employee & Admin | null;

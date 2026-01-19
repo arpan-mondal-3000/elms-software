@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, ChartNoAxesCombined, ChevronUp, User2 } from "lucide-react"
+import { Calendar, Home, Inbox, ChartNoAxesCombined, ChevronUp, User2, ChartArea } from "lucide-react"
 import { Link } from "react-router"
 
 import { Button } from "./ui/button"
@@ -50,6 +50,11 @@ const items = [
         url: "/admin/analytics",
         icon: ChartNoAxesCombined,
     },
+    {
+        title: "Analyze",
+        url: "/admin/analyze",
+        icon: ChartArea
+    }
 ]
 
 export function AdminSidebar() {

@@ -8,6 +8,7 @@ import AdminDashboardHome from "./pages/admin/AdminHome"
 import ViewRegistrations from "./pages/admin/ViewRegistrations"
 import LeaveRequests from "./pages/admin/LeaveRequests"
 import Analytics from "./pages/admin/Analytics"
+import Analyze from "./pages/admin/Analyze"
 
 import EmployeeDashboard from "./pages/employee/Dashboard"
 import Status from "./pages/employee/Status"
@@ -34,6 +35,7 @@ function App() {
             <Route path="view-registrations" element={<ViewRegistrations />} />
             <Route path="leave-requests" element={<LeaveRequests />} />
             <Route path="analytics" element={<Analytics />} />
+            <Route path="analyze" element={<Analyze />} />
           </Route>
         </Route>
         <Route element={<ProtectRoute allowedRoles={["employee"]} />}>
